@@ -4,16 +4,15 @@ from ..config import color_list1, color_list2
 
 def generate_description_card():
     """
-
     :return: A Div containing dashboard title & descriptions.
     """
     return html.Div(
         id="description-card",
         children=[
-            html.H5("Example dashboard"),
+            html.H5("Sharkify"),
             html.Div(
                 id="intro",
-                children="You can use this as a basic template for your JBI100 visualization project.",
+                children="Add visualizations to your dashboard.",
             ),
         ],
     )
@@ -40,6 +39,9 @@ def generate_control_card():
                 options=[{"label": i, "value": i} for i in color_list2],
                 value=color_list2[0],
             ),
+            # html.Br(),
+            # html.Label("Add visualization"),
+            # dcc.Button("Add", id="add-visualization", n_clicks=0),
         ], style={"textAlign": "float-left"}
     )
 
