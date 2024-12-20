@@ -48,3 +48,11 @@ def generate_control_card():
 
 def make_menu_layout():
     return [generate_description_card(), generate_control_card()]
+
+def make_dashboard_layout(visualizations):
+    """Creates a modular dashboard layout."""
+    layout = []
+    for viz in visualizations:
+        layout.append(viz)
+
+    return html.Div(layout)
