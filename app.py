@@ -1,20 +1,24 @@
 from jbi100_app.main import app
+from jbi100_app.data import get_data
 from jbi100_app.views.menu import make_menu_layout
 from jbi100_app.views.menu import make_dashboard_layout
 from jbi100_app.views.visualizations.scatterplot import Scatterplot
+from jbi100_app.views.visualizations.heatmap import Heatmap
 
 from dash import html
 import plotly.express as px
+import pandas as pd
 from dash.dependencies import Input, Output
 
 
 if __name__ == '__main__':
-    # Create data
-    df = px.data.iris()
+    # Read data
+    df = get_data()
 
     # Instantiate custom views
-    scatterplot1 = Scatterplot("Scatterplot 1", 'sepal_length', 'sepal_width', df)
-    scatterplot2 = Scatterplot("Scatterplot 2", 'petal_length', 'petal_width', df)
+    scatterplot1 = Scatterplot("Scatterplot 1", 'incident.year', 'incident.month', df)
+    scatterplot2 = Scatterplot("Scatterplot 2", 'incident.year', 'incident.month', df)
+    # heatmap = Heatmap("Heatmap", df)
 
     # Note from Dembis: We can use the menu.py file to create a modular dashboard layout over here
     app.layout = html.Div(
@@ -32,8 +36,9 @@ if __name__ == '__main__':
                 id="right-column",
                 className="nine columns",
                 children=[
-                    scatterplot1,
-                    scatterplot2
+                    #scatterplot1,
+                    #scatterplot2,
+                    #heatmap
                 ],
             ),
         ],
@@ -55,6 +60,5 @@ if __name__ == '__main__':
     ])
     def update_scatter_2(selected_color, selected_data):
         return scatterplot2.update(selected_color, selected_data)
-
 
     app.run_server(debug=True, dev_tools_ui=False)
