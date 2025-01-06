@@ -1,7 +1,8 @@
 from jbi100_app.main import app
 from jbi100_app.data import get_data
 from jbi100_app.views.menu import make_menu_layout
-from jbi100_app.views.menu import make_dashboard_layout
+from jbi100_app.data import get_data
+from jbi100_app.views.visualizations.map import ScatterGeo
 from jbi100_app.views.visualizations.scatterplot import Scatterplot
 #from jbi100_app.views.visualizations.heatmap import Heatmap
 
@@ -12,13 +13,13 @@ from dash.dependencies import Input, Output
 
 
 if __name__ == '__main__':
-    # Read data
+    
     df = get_data()
 
     # Instantiate custom views
-    scatterplot1 = Scatterplot("Scatterplot 1", 'incident.year', 'incident.month', df)
-    scatterplot2 = Scatterplot("Scatterplot 2", 'incident.year', 'incident.month', df)
-    # heatmap = Heatmap("Heatmap", df)
+    map = ScatterGeo("Map", df, 'Location')
+    scatterplot1 = Scatterplot("Scatterplot 1", 'sepal_length', 'sepal_width', df)
+    scatterplot2 = Scatterplot("Scatterplot 2", 'petal_length', 'petal_width', df)
 
     # Note from Dembis: We can use the menu.py file to create a modular dashboard layout over here
     app.layout = html.Div(
@@ -39,6 +40,7 @@ if __name__ == '__main__':
                     #scatterplot1,
                     #scatterplot2,
                     #heatmap
+                    map
                 ],
             ),
         ],

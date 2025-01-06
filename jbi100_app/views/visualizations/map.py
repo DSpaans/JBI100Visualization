@@ -4,12 +4,11 @@ import plotly.graph_objects as go
 import plotly.express as px
 import pandas as pd
 
-class ScatterMap(html.Div):
-    def __init__(self, name, feature_x, feature_y, df):
+class ScatterGeo(html.Div):
+    def __init__(self, name, df, feature_x):
         self.html_id = name.lower().replace(" ", "-")
         self.df = df
         self.feature_x = feature_x
-        self.feature_y = feature_y
 
         # Equivalent to `html.Div([...])`
         super().__init__(
@@ -21,11 +20,25 @@ class ScatterMap(html.Div):
         )
 
     def update(self):
-        self.fig = go.Figure()
+        self.fig = go.Figure(data=go.Scattergeo(
+            lon = self.df['Longitude'],
+            lat = self.df['Latitude'],
+            text = self.df['Location'],
+            mode = 'markers',
+            marker=dict(
+                    color='blue',   # Change marker color as needed
+                    size=6)
+            )
+        )
 
-        # Create map
-        fig = px.scatter_geo(self.df, lat="Latitude", lon="Longitude", color="Country",
-                             hover_name="Country", size="Population", projection="natural earth")
-
-        self.fig = fig
+        self.fig.update_layout(
+            title = 'Australian Shark Incidents',
+            geo=dict(
+                scope='world', 
+                center=dict(lat=-28, lon=133), # roughly central Australia
+                projection_scale=2.5,         # controls zoom level
+                showland=True,
+                landcolor='rgb(217, 217, 217)',
+                )
+        )
         return self.fig
