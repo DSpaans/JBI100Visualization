@@ -3,7 +3,7 @@ from jbi100_app.data import get_data
 from jbi100_app.views.menu import make_menu_layout
 from jbi100_app.views.menu import make_dashboard_layout
 from jbi100_app.views.visualizations.scatterplot import Scatterplot
-from jbi100_app.views.visualizations.heatmap import Heatmap
+#from jbi100_app.views.visualizations.heatmap import Heatmap
 
 from dash import html
 import plotly.express as px
