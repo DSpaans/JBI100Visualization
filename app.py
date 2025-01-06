@@ -20,6 +20,7 @@ if __name__ == '__main__':
     scatter_map_aus = ScatterGeo("Dude we did it", df, 'Junk_for_now')
     scatterplot1 = Scatterplot("Scatterplot 1", 'sepal_length', 'sepal_width', df)
     scatterplot2 = Scatterplot("Scatterplot 2", 'petal_length', 'petal_width', df)
+    heatmap = Heatmap("Heatmap", df)
 
     # Note from Dembis: We can use the menu.py file to create a modular dashboard layout over here
     app.layout = html.Div(
@@ -40,7 +41,8 @@ if __name__ == '__main__':
                     #scatterplot1,
                     #scatterplot2,
                     #heatmap
-                    scatter_map_aus
+                    scatter_map_aus,
+                    heatmap
                 ],
             ),
         ],
