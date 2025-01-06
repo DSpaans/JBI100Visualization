@@ -17,7 +17,7 @@ if __name__ == '__main__':
     df = get_data()
 
     # Instantiate custom views
-    map = ScatterGeo("Map", df, 'Location')
+    scatter_map_aus = ScatterGeo("Dude we did it", df, 'Junk_for_now')
     scatterplot1 = Scatterplot("Scatterplot 1", 'sepal_length', 'sepal_width', df)
     scatterplot2 = Scatterplot("Scatterplot 2", 'petal_length', 'petal_width', df)
 
@@ -40,13 +40,19 @@ if __name__ == '__main__':
                     #scatterplot1,
                     #scatterplot2,
                     #heatmap
-                    map
+                    scatter_map_aus
                 ],
             ),
         ],
     )
 
     # Define interactions
+    @app.callback(
+        Output(scatter_map_aus.html_id, "figure"), [
+        Input("select-color-scatter-1", "value"),
+        Input(scatterplot1.html_id, 'selectedData')
+    ])
+    
     @app.callback(
         Output(scatterplot1.html_id, "figure"), [
         Input("select-color-scatter-1", "value"),
@@ -62,5 +68,8 @@ if __name__ == '__main__':
     ])
     def update_scatter_2(selected_color, selected_data):
         return scatterplot2.update(selected_color, selected_data)
+    
+    def update_map():
+        return scatter_map_aus.update()
 
     app.run_server(debug=True, dev_tools_ui=False)

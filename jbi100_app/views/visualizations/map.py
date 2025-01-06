@@ -15,7 +15,7 @@ class ScatterGeo(html.Div):
             className="graph_card",
             children=[
                 html.H6(name),
-                dcc.Graph(id=self.html_id)
+                dcc.Graph(id=self.html_id, figure=self.update())
             ],
         )
 
