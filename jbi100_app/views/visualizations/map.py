@@ -51,8 +51,8 @@ class ScatterGeo(html.Div):
         )
 
         fig.update_layout(
-            # title = '', #Removed title as it is already in the card from the app.py file
-            # title_x = 0.5,
+            title = 'Incidents map',
+            title_x = 0.0,
             geo=dict(
                 scope='world', 
                 center=dict(lat=-28, lon=133), # roughly central Australia
