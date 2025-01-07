@@ -19,11 +19,17 @@ class ScatterGeo(html.Div):
             ],
         )
 
-    def update(self):
-        self.fig = go.Figure(data=go.Scattergeo(
-            lon = self.df['Longitude'],
-            lat = self.df['Latitude'],
-            text = self.df['Location'],
+    #Update the map with original dataset of the filtered dataset
+    def update(self, filtered_df=None):
+        #If there is no filtered_df, default to self.df
+        if filtered_df is None:
+            filtered_df = self.df
+
+        #Build the figure
+        fig = go.Figure(data=go.Scattergeo(
+            lon = filtered_df['Longitude'],
+            lat = filtered_df['Latitude'],
+            text = filtered_df['Location'],
             mode = 'markers',
             marker=dict(
                     color='blue',   # Change marker color as needed
@@ -31,7 +37,7 @@ class ScatterGeo(html.Div):
             )
         )
 
-        self.fig.update_layout(
+        fig.update_layout(
             title = 'Australian Shark Incidents',
             geo=dict(
                 scope='world', 
@@ -41,4 +47,4 @@ class ScatterGeo(html.Div):
                 landcolor='rgb(217, 217, 217)',
                 )
         )
-        return self.fig
+        return fig
