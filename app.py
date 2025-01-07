@@ -49,8 +49,11 @@ if __name__ == '__main__':
                         id="year-slider",
                         min=min_year,
                         max=max_year,
+                        marks=None,
                         value=[min_year,max_year],
-                        marks={str(y): str(y) for y in range (min_year, max_year + 1)},
+                        tooltip={"placement": "bottom",
+                                 "always_visible": True
+                                 },
                         step=1
                     ),
                     #Heatmap
