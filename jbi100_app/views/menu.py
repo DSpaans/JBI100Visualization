@@ -7,7 +7,11 @@ def generate_description_card():
     return html.Div(
         id="description-card",
         children=[
-            html.H5("Sharkify"),
+            dcc.Link(
+                html.H5("Sharkify Dashboard"),
+                href="/",
+                style={"text-decoration": "none", "color": "black"},
+            ),
             html.Div(
                 id="intro",
                 children="Add visualizations to your dashboard.",
