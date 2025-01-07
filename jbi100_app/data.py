@@ -18,10 +18,9 @@ def get_data():
     return df
 
 def treat_data(df):
-    df['Injury.Category'] = df['Injury.location'].apply(lambda loc: categorize_injury_location(loc))
+    df['Injury.category'] = df['Injury.location'].apply(lambda loc: categorize_injury_location(loc))
     return df
     
-
 def categorize_injury_location(location):
     if pd.isna(location):
         return 'Unknown'

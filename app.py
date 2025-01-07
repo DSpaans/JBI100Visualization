@@ -16,13 +16,10 @@ if __name__ == '__main__':
 
     # Instantiate custom views
     scatter_map_aus = ScatterGeo("Incidents Map", df, 'Junk_for_now')
-    scatterplot1 = Scatterplot("Scatterplot 1", 'sepal_length', 'sepal_width', df)
-    scatterplot2 = Scatterplot("Scatterplot 2", 'petal_length', 'petal_width', df)
     heatmap = Heatmap("Heatmap", df)
 
-    # Determine the max/min year for the slider
-    min_year = df["Incident.year"].min()
-    max_year = df["Incident.year"].max()
+    #scatterplot1 = Scatterplot("Scatterplot 1", 'sepal_length', 'sepal_width', df)
+    #scatterplot2 = Scatterplot("Scatterplot 2", 'petal_length', 'petal_width', df)
 
     # Note from Dembis: We can use the menu.py file to create a modular dashboard layout over here
     app.layout = html.Div(
@@ -32,7 +29,7 @@ if __name__ == '__main__':
             html.Div(
                 id="left-column",
                 className="three columns",
-                children=make_menu_layout()
+                children=make_menu_layout(df)
             ),
 
             # Right column
@@ -40,22 +37,8 @@ if __name__ == '__main__':
                 id="right-column",
                 className="nine columns",
                 children=[
-                    #scatterplot1,
-                    #scatterplot2,
                     #Map Visualization
                     scatter_map_aus,
-                    #Time Slider just below the map
-                    dcc.RangeSlider(
-                        id="year-slider",
-                        min=min_year,
-                        max=max_year,
-                        marks=None,
-                        value=[min_year,max_year],
-                        tooltip={"placement": "bottom",
-                                 "always_visible": True
-                                 },
-                        step=1
-                    ),
                     #Heatmap
                     heatmap
                 ],
@@ -65,6 +48,26 @@ if __name__ == '__main__':
 
     # Define interactions   
     @app.callback(
+        Output(heatmap.html_id, "figure"), [
+        Input("year-slider", "value")
+    ])
+    def update_heatmap(year_range):
+        low, high = year_range
+        filtered_df = df[df["Incident.year"].between(low, high)]
+        return heatmap.update(filtered_df)
+    
+    @app.callback(
+        Output(scatter_map_aus.html_id, "figure"), [
+        Input("year-slider", "value")
+    ])
+    def update_map(year_range):
+        low, high = year_range
+        filtered_df = df[df["Incident.year"].between(low, high)]
+        return scatter_map_aus.update(filtered_df)
+    
+    app.run_server(debug=True, dev_tools_ui=False)
+    
+"""    @app.callback(
         Output(scatterplot1.html_id, "figure"), [
         Input("select-color-scatter-1", "value"),
         Input(scatterplot2.html_id, 'selectedData')
@@ -78,16 +81,4 @@ if __name__ == '__main__':
         Input(scatterplot1.html_id, 'selectedData')
     ])
     def update_scatter_2(selected_color, selected_data):
-        return scatterplot2.update(selected_color, selected_data)
-    
-    @app.callback(
-        Output(scatter_map_aus.html_id, "figure"), [
-        Input("year-slider", "value")
-    ])
-    def update_map(year_range):
-        low, high = year_range
-        filtered_df = df[df["Incident.year"].between(low, high)]
-        print("Slider changed:", year_range)  # Debugging
-        return scatter_map_aus.update(filtered_df)
-
-    app.run_server(debug=True, dev_tools_ui=False)
+        return scatterplot2.update(selected_color, selected_data)"""
