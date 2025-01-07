@@ -13,9 +13,12 @@ class ScatterGeo(html.Div):
         # Equivalent to `html.Div([...])`
         super().__init__(
             className="graph_card",
+            style={"display": "flex", "justifyContent": "center", "height": "100%"},
             children=[
                 html.H6(name),
-                dcc.Graph(id=self.html_id, figure=self.update())
+                dcc.Graph(id=self.html_id, figure=self.update(),
+                style={'height': '600px', 'width': '100%'}
+                )
             ],
         )
 
@@ -33,18 +36,21 @@ class ScatterGeo(html.Div):
             mode = 'markers',
             marker=dict(
                     color='blue',   # Change marker color as needed
-                    size=6)
+                    opacity=0.7,
+                    size=8)
             )
         )
 
         fig.update_layout(
-            title = 'Australian Shark Incidents',
+            title = '', #Removed title as it is already in the card from the app.py file
+            title_x = 0.5,
             geo=dict(
                 scope='world', 
                 center=dict(lat=-28, lon=133), # roughly central Australia
                 projection_scale=2.5,         # controls zoom level
                 showland=True,
                 landcolor='rgb(217, 217, 217)',
-                )
+                ),
+                margin=dict(l=10, r=10, t=40, b=10)
         )
         return fig
