@@ -1,4 +1,3 @@
 # Here you can add any global configuations
 
-color_list1 = ["green", "red"]
-color_list2 = ["red", "purple"]
+column_options_1 = ["", "Incident.year", "Incident.type", "Incident.country", "Incident.area", "Incident.location", "Incident.activity"]

@@ -4,10 +4,8 @@ from jbi100_app.views.menu import make_menu_layout
 from jbi100_app.views.visualizations.map import ScatterGeo
 from jbi100_app.views.visualizations.scatterplot import Scatterplot
 from jbi100_app.views.visualizations.heatmap import Heatmap
-
+from jbi100_app.config import column_options_1
 from dash import html, dcc
-import plotly.express as px
-import pandas as pd
 from dash.dependencies import Input, Output
 
 if __name__ == '__main__':
@@ -18,10 +16,6 @@ if __name__ == '__main__':
     scatter_map_aus = ScatterGeo("Incidents Map", df, 'Junk_for_now')
     heatmap = Heatmap("Heatmap", df)
 
-    #scatterplot1 = Scatterplot("Scatterplot 1", 'sepal_length', 'sepal_width', df)
-    #scatterplot2 = Scatterplot("Scatterplot 2", 'petal_length', 'petal_width', df)
-
-    # Note from Dembis: We can use the menu.py file to create a modular dashboard layout over here
     app.layout = html.Div(
         id="app-container",
         children=[
@@ -29,7 +23,7 @@ if __name__ == '__main__':
             html.Div(
                 id="left-column",
                 className="three columns",
-                children=make_menu_layout(df),
+                children=make_menu_layout(df, column_options_1),
                 style={
                     "position": "fixed",
                     "top": "0",
@@ -62,23 +56,37 @@ if __name__ == '__main__':
     )
 
     # Define interactions   
-    @app.callback(
-        Output(heatmap.html_id, "figure"), [
-        Input("year-slider", "value")
-    ])
-    def update_heatmap(year_range):
-        low, high = year_range
-        filtered_df = df[df["Incident.year"].between(low, high)]
-        return heatmap.update(filtered_df)
+    
+    # def update_heatmap(year_range):
+    #     low, high = year_range
+    #     filtered_df = df[df["Incident.year"].between(low, high)]
+    #     return heatmap.update(filtered_df)
+    
+    # @app.callback(
+    #     Output(scatter_map_aus.html_id, "figure"),
+    #     Input("select-hover-column", "value"),
+    # )
+    
+    # def update_map(year_range, selected_column):
+    #     low, high = year_range
+    #     filtered_df = df[df["Incident.year"].between(low, high)]
+    #     return scatter_map_aus.update(filtered_df, selected_column)
     
     @app.callback(
-        Output(scatter_map_aus.html_id, "figure"), [
-        Input("year-slider", "value")
-    ])
-    def update_map(year_range):
+        [Output(scatter_map_aus.html_id, "figure"), Output(heatmap.html_id, "figure")],
+        [Input("year-slider", "value"), Input("select-hover-column", "value")]
+    )
+    
+    def update_visualizations(year_range, selected_column):
+        # Filter data based on the year range
         low, high = year_range
         filtered_df = df[df["Incident.year"].between(low, high)]
-        return scatter_map_aus.update(filtered_df)
+
+        # Update the map and heatmap
+        map_figure = scatter_map_aus.update(filtered_df, selected_column)
+        heatmap_figure = heatmap.update(filtered_df)
+
+        return map_figure, heatmap_figure
     
     app.run_server(debug=True, dev_tools_ui=False)
     

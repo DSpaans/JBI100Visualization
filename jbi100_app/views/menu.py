@@ -1,6 +1,4 @@
 from dash import dcc, html
-from ..config import color_list1, color_list2
-
 
 def generate_description_card():
     """
@@ -18,7 +16,7 @@ def generate_description_card():
     )
 
 
-def generate_control_card(df):
+def generate_control_card(df, column_options):
     """
 
     :return: A Div containing controls for graphs.
@@ -42,28 +40,18 @@ def generate_control_card(df):
                                  },
                         step=1
                     ),
-            html.Label("Color scatterplot 1"),
+            html.Label("Select column"),
             dcc.Dropdown(
-                id="select-color-scatter-1",
-                options=[{"label": i, "value": i} for i in color_list1],
-                value=color_list1[0],
+                id="select-hover-column",
+                options=[{"label": col, "value": col} for col in column_options],
+                value="",
             ),
-            html.Br(),
-            html.Label("Color scatterplot 2"),
-            dcc.Dropdown(
-                id="select-color-scatter-2",
-                options=[{"label": i, "value": i} for i in color_list2],
-                value=color_list2[0],
-            ),
-            # html.Br(),
-            # html.Label("Add visualization"),
-            # dcc.Button("Add", id="add-visualization", n_clicks=0),
         ], style={"textAlign": "float-left"}
     )
 
 
-def make_menu_layout(df):
-    return [generate_description_card(), generate_control_card(df)]
+def make_menu_layout(df, column_options):
+    return [generate_description_card(), generate_control_card(df, column_options)]
 
 def make_dashboard_layout(visualizations):
     """Creates a modular dashboard layout."""
