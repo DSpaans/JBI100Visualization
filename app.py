@@ -29,7 +29,17 @@ if __name__ == '__main__':
             html.Div(
                 id="left-column",
                 className="three columns",
-                children=make_menu_layout(df)
+                children=make_menu_layout(df),
+                style={
+                    "position": "fixed",
+                    "top": "0",
+                    "left": "0",
+                    "bottom": "0",
+                    "width": "25%",
+                    "padding": "10px",
+                    "background-color": "#f8f9fa",
+                    "overflow": "auto",
+                }
             ),
 
             # Right column
@@ -42,6 +52,11 @@ if __name__ == '__main__':
                     #Heatmap
                     heatmap
                 ],
+                style={
+                    "margin-left": "25%",
+                    "padding": "10px",
+                    "overflow": "auto",
+                }
             ),
         ],
     )
