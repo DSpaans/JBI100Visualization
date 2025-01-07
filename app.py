@@ -85,7 +85,6 @@ if __name__ == '__main__':
         Input("year-slider", "value")
     ])
     def update_map(year_range):
-        print("Slider changed:", year_range)  # Debugging
         low, high = year_range
         filtered_df = df[df["Incident.year"].between(low, high)]
         print("Slider changed:", year_range)  # Debugging
