@@ -13,7 +13,7 @@ if __name__ == '__main__':
     df = get_data()
 
     # Instantiate custom views
-    scatter_map_aus = ScatterGeo("", df, 'Junk_for_now')
+    scatter_map_aus = ScatterGeo("Incidents Map", df, 'Junk_for_now')
     heatmap = Heatmap("Heatmap", df)
 
     app.layout = html.Div(

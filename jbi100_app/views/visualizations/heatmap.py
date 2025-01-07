@@ -21,12 +21,6 @@ class Heatmap(html.Div):
             ],
         )
 
-
-    def _prepare_heatmap_data(df):
-        # Group by Injury Category and count occurrences
-        grouped_data = df.groupby(['Injury.category', 'Shark.common.name']).size().reset_index(name='Count')
-        return grouped_data
-
     def update(self, filtered_df=None):
         # Generate the one-dimensional heatmap figure
         if filtered_df is None:

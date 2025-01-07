@@ -11,7 +11,7 @@ class ScatterGeo(html.Div):
         # Equivalent to `html.Div([...])`
         super().__init__(
             className="graph_card",
-            style={"display": "flex", "justifyContent": "center", "height": "100%"},
+            style={"justifyContent": "center", "height": "100%"},
             children=[
                 html.H6(name),
                 dcc.Graph(id=self.html_id, figure=self.update(),
@@ -20,7 +20,7 @@ class ScatterGeo(html.Div):
             ],
         )
 
-    #Update the map with original dataset of the filtered dataset
+    #Update the map with original dataset or the filtered dataset
     def update(self, filtered_df=None, hover_column=""):
         #If there is no filtered_df, default to self.df
         if filtered_df is None:
@@ -51,8 +51,7 @@ class ScatterGeo(html.Div):
         )
 
         fig.update_layout(
-            title = 'Incidents map',
-            title_x = 0.0,
+            title = '',
             geo=dict(
                 scope='world', 
                 center=dict(lat=-28, lon=133), # roughly central Australia
