@@ -12,9 +12,6 @@ from dash.dependencies import Input, Output
 if __name__ == '__main__':
     
     df = get_data()
-    df["Number_of_fatal_incidents"] = df["Victim.injury"].apply(
-    lambda x: 1 if isinstance(x, str) and "fatal" in x.lower() else 0
-    )
 
     # Instantiate custom views
     scatter_map_aus = ScatterGeo("Incidents Map", df, 'Junk_for_now')
