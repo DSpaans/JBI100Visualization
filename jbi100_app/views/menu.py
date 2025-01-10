@@ -16,7 +16,7 @@ def generate_description_card():
     )
 
 
-def generate_control_card(df, column_options, column_options_heatmap):
+def generate_control_card(df, column_options, column_options_heatmap, column_options_barchart):
     """
 
     :return: A Div containing controls for graphs.
@@ -58,12 +58,25 @@ def generate_control_card(df, column_options, column_options_heatmap):
                 options=[{"label": col, "value": col} for col in column_options_heatmap],
                 value="Shark.common.name",
             ),
+            html.Label("Select x-axis barchart"),
+            dcc.Dropdown(
+                id="select-x-bar",
+                options=[{"label": col, "value": col} for col in column_options_barchart],
+                value="Injury.category",
+            ),
+
+            html.Label("Select y-axis barchart"),
+            dcc.Dropdown(
+                id="select-y-bar",
+                options=[{"label": col, "value": col} for col in column_options_barchart],
+                value="Number_of_fatal_incidents", 
+            ),
         ], style={"textAlign": "float-left"}
     )
 
 
-def make_menu_layout(df, column_options, column_options_heatmap):
-    return [generate_description_card(), generate_control_card(df, column_options, column_options_heatmap)]
+def make_menu_layout(df, column_options, column_options_heatmap, column_options_barchart):
+    return [generate_description_card(), generate_control_card(df, column_options, column_options_heatmap, column_options_barchart)]
 
 def make_dashboard_layout(visualizations):
     """Creates a modular dashboard layout."""
