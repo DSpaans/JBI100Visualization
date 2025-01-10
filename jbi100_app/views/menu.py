@@ -16,7 +16,7 @@ def generate_description_card():
     )
 
 
-def generate_control_card(df, column_options, column_options_heatmap, column_options_barchart):
+def generate_control_card(df, column_options, column_options_heatmap, column_options_barchart, column_options_radar):
     """
 
     :return: A Div containing controls for graphs.
@@ -56,12 +56,42 @@ def generate_control_card(df, column_options, column_options_heatmap, column_opt
                 options=[{"label": col, "value": col} for col in column_options_barchart],
                 value="Number_of_fatal_incidents", 
             ),
+            html.Label("Radar Axis 1"),
+            dcc.Dropdown(
+                id="select-radar-col1",
+                options=[{"label": col, "value": col} for col in column_options_radar],
+                value=column_options_radar[0],  # Default value
+            ),
+            html.Label("Radar Axis 2"),
+            dcc.Dropdown(
+                id="select-radar-col2",
+                options=[{"label": col, "value": col} for col in column_options_radar],
+                value=column_options_radar[1],
+            ),
+            html.Label("Radar Axis 3"),
+            dcc.Dropdown(
+                id="select-radar-col3",
+                options=[{"label": col, "value": col} for col in column_options_radar],
+                value=column_options_radar[2],
+            ),
+            html.Label("Radar Axis 4"),
+            dcc.Dropdown(
+                id="select-radar-col4",
+                options=[{"label": col, "value": col} for col in column_options_radar],
+                value=column_options_radar[3],
+            ),
+            html.Label("Radar Axis 5"),
+            dcc.Dropdown(
+                id="select-radar-col5",
+                options=[{"label": col, "value": col} for col in column_options_radar],
+                value=column_options_radar[4],
+            ),
         ], style={"textAlign": "float-left"}
     )
 
 
-def make_menu_layout(df, column_options, column_options_heatmap, column_options_barchart):
-    return [generate_description_card(), generate_control_card(df, column_options, column_options_heatmap, column_options_barchart)]
+def make_menu_layout(df, column_options, column_options_heatmap, column_options_barchart, column_options_radar):
+    return [generate_description_card(), generate_control_card(df, column_options, column_options_heatmap, column_options_barchart, column_options_radar)]
 
 def make_time_slider(df):
     min_year = df["Incident.year"].min()
