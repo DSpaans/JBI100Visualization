@@ -4,7 +4,7 @@ from jbi100_app.views.menu import make_menu_layout
 from jbi100_app.views.visualizations.map import ScatterGeo
 from jbi100_app.views.visualizations.scatterplot import Scatterplot
 from jbi100_app.views.visualizations.heatmap import Heatmap
-from jbi100_app.config import column_options_1
+from jbi100_app.config import column_options_1, column_options_heatmap
 from dash import html, dcc
 from dash.dependencies import Input, Output
 
@@ -23,7 +23,7 @@ if __name__ == '__main__':
             html.Div(
                 id="left-column",
                 className="three columns",
-                children=make_menu_layout(df, column_options_1),
+                children=make_menu_layout(df, column_options_1, column_options_heatmap),
                 style={
                     "position": "fixed",
                     "top": "0",
@@ -74,17 +74,18 @@ if __name__ == '__main__':
     
     @app.callback(
         [Output(scatter_map_aus.html_id, "figure"), Output(heatmap.html_id, "figure")],
-        [Input("year-slider", "value"), Input("select-hover-column", "value")]
+        [Input("year-slider", "value"), Input("select-hover-column", "value"), 
+         Input("select-x-heatmap", "value"), Input("select-y-heatmap", "value")],
     )
     
-    def update_visualizations(year_range, selected_column):
+    def update_visualizations(year_range, selected_column, selected_x, selected_y):
         # Filter data based on the year range
         low, high = year_range
         filtered_df = df[df["Incident.year"].between(low, high)]
 
         # Update the map and heatmap
         map_figure = scatter_map_aus.update(filtered_df, selected_column)
-        heatmap_figure = heatmap.update(filtered_df)
+        heatmap_figure = heatmap.update(selected_x, selected_y, filtered_df)
 
         return map_figure, heatmap_figure
     

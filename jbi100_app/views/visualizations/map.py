@@ -15,7 +15,7 @@ class ScatterGeo(html.Div):
             children=[
                 html.H6(name),
                 dcc.Graph(id=self.html_id, figure=self.update(),
-                style={'height': '600px', 'width': '100%'}
+                style={'height': '45vh', 'width': '100%'}
                 )
             ],
         )

@@ -16,7 +16,7 @@ def generate_description_card():
     )
 
 
-def generate_control_card(df, column_options):
+def generate_control_card(df, column_options, column_options_heatmap):
     """
 
     :return: A Div containing controls for graphs.
@@ -46,12 +46,24 @@ def generate_control_card(df, column_options):
                 options=[{"label": col, "value": col} for col in column_options],
                 value="",
             ),
+            html.Label("Select x-axis heatmap"),
+            dcc.Dropdown(
+                id="select-x-heatmap",
+                options=[{"label": col, "value": col} for col in column_options_heatmap],
+                value="Injury.category",
+            ),
+            html.Label("Select y-axis heatmap"),
+            dcc.Dropdown(
+                id="select-y-heatmap",
+                options=[{"label": col, "value": col} for col in column_options_heatmap],
+                value="Shark.common.name",
+            ),
         ], style={"textAlign": "float-left"}
     )
 
 
-def make_menu_layout(df, column_options):
-    return [generate_description_card(), generate_control_card(df, column_options)]
+def make_menu_layout(df, column_options, column_options_heatmap):
+    return [generate_description_card(), generate_control_card(df, column_options, column_options_heatmap)]
 
 def make_dashboard_layout(visualizations):
     """Creates a modular dashboard layout."""

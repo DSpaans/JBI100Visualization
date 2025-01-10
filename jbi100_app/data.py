@@ -19,6 +19,8 @@ def get_data():
 
 def treat_data(df):
     df['Injury.category'] = df['Injury.location'].apply(lambda loc: categorize_injury_location(loc))
+    df = make_lower_case(df, 'Site.category')
+    df = make_lower_case(df, 'Victim.injury')
     return df
     
 def categorize_injury_location(location):
@@ -38,3 +40,7 @@ def categorize_injury_location(location):
     elif re.search(r'other: uninjured', location):
         return 'Uninjured'
     return 'Other'
+
+def make_lower_case(df, column):
+    df[column] = df[column].astype(str).str.lower()
+    return df
