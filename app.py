@@ -1,6 +1,6 @@
 from jbi100_app.main import app
 from jbi100_app.data import get_data
-from jbi100_app.views.menu import make_menu_layout
+from jbi100_app.views.menu import make_menu_layout, make_time_slider
 from jbi100_app.views.visualizations.map import ScatterGeo
 from jbi100_app.views.visualizations.scatterplot import Scatterplot
 from jbi100_app.views.visualizations.heatmap import Heatmap
@@ -56,6 +56,21 @@ if __name__ == '__main__':
                     "overflow": "auto",
                 }
             ),
+            html.Div(
+                id="range-slider-container",
+                className="one columns",
+                children=[make_time_slider(df)],
+                style={
+                    "position": "fixed",
+                    "bottom": "0",
+                    "right": "0",
+                    "width": "7%",
+                    "height": "100%",
+                    "padding": "5px",
+                    "background-color": "#f8f9fa",
+                    "overflow": "auto",
+                },
+                ),
         ],
     )
 

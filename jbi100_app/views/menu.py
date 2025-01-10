@@ -22,24 +22,9 @@ def generate_control_card(df, column_options, column_options_heatmap, column_opt
     :return: A Div containing controls for graphs.
     """
 
-    min_year = df["Incident.year"].min()
-    max_year = df["Incident.year"].max()
-
     return html.Div(
         id="control-card",
         children=[
-            html.Label("Time period"),
-            dcc.RangeSlider(
-                        id="year-slider",
-                        min=min_year,
-                        max=max_year,
-                        marks=None,
-                        value=[min_year,max_year],
-                        tooltip={"placement": "bottom",
-                                 "always_visible": True
-                                 },
-                        step=1
-                    ),
             html.Label("Select column"),
             dcc.Dropdown(
                 id="select-hover-column",
@@ -78,10 +63,34 @@ def generate_control_card(df, column_options, column_options_heatmap, column_opt
 def make_menu_layout(df, column_options, column_options_heatmap, column_options_barchart):
     return [generate_description_card(), generate_control_card(df, column_options, column_options_heatmap, column_options_barchart)]
 
-def make_dashboard_layout(visualizations):
-    """Creates a modular dashboard layout."""
-    layout = []
-    for viz in visualizations:
-        layout.append(viz)
-
-    return html.Div(layout)
+def make_time_slider(df):
+    min_year = df["Incident.year"].min()
+    max_year = df["Incident.year"].max()
+    return html.Div(
+        id="time-slider",
+        # style={
+        #     "height": "100%",
+        #     "display": "flex",
+        #     "flexDirection": "column",
+        #     "margin": 0,
+        #     "padding": 0,
+        # },
+        children=[
+            html.Label("Time period"),
+                dcc.RangeSlider(
+                    id="year-slider",
+                    min=min_year,
+                    max=max_year,
+                    marks=None,
+                    vertical=True,
+                    value=[min_year,max_year],
+                    tooltip={
+                        "placement": "left",
+                        "always_visible": True
+                        },
+                    step=1,
+                    verticalHeight=600,
+                    
+                ),
+        ],
+    )
