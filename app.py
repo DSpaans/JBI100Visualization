@@ -5,7 +5,7 @@ from jbi100_app.views.visualizations.map import ScatterGeo
 from jbi100_app.views.visualizations.scatterplot import Scatterplot
 from jbi100_app.views.visualizations.heatmap import Heatmap
 from jbi100_app.views.visualizations.barchart import BarChart
-from jbi100_app.config import column_options_1, column_options_heatmap, column_options_barchart
+from jbi100_app.config import column_options_1, column_options_heatmap, column_options_barchart, column_options_radar
 from dash import html, dcc
 from dash.dependencies import Input, Output
 
@@ -25,7 +25,7 @@ if __name__ == '__main__':
             html.Div(
                 id="left-column",
                 className="three columns",
-                children=make_menu_layout(df, column_options_1, column_options_heatmap, column_options_barchart),
+                children=make_menu_layout(df, column_options_1, column_options_heatmap, column_options_barchart, column_options_radar),
                 style={
                     "position": "fixed",
                     "top": "0",
@@ -38,9 +38,9 @@ if __name__ == '__main__':
                 }
             ),
 
-            # Right column
+            # Middle column
             html.Div(
-                id="right-column",
+                id="middle-column",
                 className="nine columns",
                 children=[
                     #Map Visualization
@@ -51,11 +51,14 @@ if __name__ == '__main__':
                     barchart
                 ],
                 style={
+                    "width": "70%",
                     "margin-left": "25%",
                     "padding": "10px",
                     "overflow": "auto",
                 }
             ),
+
+            # Right column
             html.Div(
                 id="range-slider-container",
                 className="one columns",
@@ -64,7 +67,7 @@ if __name__ == '__main__':
                     "position": "fixed",
                     "bottom": "0",
                     "right": "0",
-                    "width": "7%",
+                    "width": "5%",
                     "height": "100%",
                     "padding": "5px",
                     "background-color": "#f8f9fa",
