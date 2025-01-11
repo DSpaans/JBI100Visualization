@@ -1,9 +1,7 @@
 from dash import dcc, html
 
 def generate_description_card():
-    """
-    :return: A Div containing dashboard title & descriptions.
-    """
+    #A Div containing dashboard title & descriptions.
     return html.Div(
         id="description-card",
         children=[
@@ -16,11 +14,11 @@ def generate_description_card():
     )
 
 
-def generate_control_card(df, column_options, column_options_heatmap, column_options_barchart, column_options_radar):
-    """
+def generate_control_card(df, column_options, column_options_heatmap, column_options_barchart):
+    #A Div containing controls for graphs.
 
-    :return: A Div containing controls for graphs.
-    """
+    #List of all unique shark names for dropdown
+    shark_names = sorted(df["Shark.common.name"].dropna().unique())
 
     return html.Div(
         id="control-card",
@@ -56,42 +54,18 @@ def generate_control_card(df, column_options, column_options_heatmap, column_opt
                 options=[{"label": col, "value": col} for col in column_options_barchart],
                 value="Number_of_fatal_incidents", 
             ),
-            html.Label("Radar Axis 1"),
+            html.Label("Select Shark Type (Radar)"),
             dcc.Dropdown(
-                id="select-radar-col1",
-                options=[{"label": col, "value": col} for col in column_options_radar],
-                value=column_options_radar[0],  # Default value
-            ),
-            html.Label("Radar Axis 2"),
-            dcc.Dropdown(
-                id="select-radar-col2",
-                options=[{"label": col, "value": col} for col in column_options_radar],
-                value=column_options_radar[1],
-            ),
-            html.Label("Radar Axis 3"),
-            dcc.Dropdown(
-                id="select-radar-col3",
-                options=[{"label": col, "value": col} for col in column_options_radar],
-                value=column_options_radar[2],
-            ),
-            html.Label("Radar Axis 4"),
-            dcc.Dropdown(
-                id="select-radar-col4",
-                options=[{"label": col, "value": col} for col in column_options_radar],
-                value=column_options_radar[3],
-            ),
-            html.Label("Radar Axis 5"),
-            dcc.Dropdown(
-                id="select-radar-col5",
-                options=[{"label": col, "value": col} for col in column_options_radar],
-                value=column_options_radar[4],
+                id="select-radar-shark-type",
+                options=[{"label": name, "value": name} for name in shark_names],
+                value=shark_names[0] if shark_names else None,
             ),
         ], style={"textAlign": "float-left"}
     )
 
 
-def make_menu_layout(df, column_options, column_options_heatmap, column_options_barchart, column_options_radar):
-    return [generate_description_card(), generate_control_card(df, column_options, column_options_heatmap, column_options_barchart, column_options_radar)]
+def make_menu_layout(df, column_options, column_options_heatmap, column_options_barchart):
+    return [generate_description_card(), generate_control_card(df, column_options, column_options_heatmap, column_options_barchart)]
 
 def make_time_slider(df):
     min_year = df["Incident.year"].min()
