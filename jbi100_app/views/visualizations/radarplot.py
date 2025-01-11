@@ -4,9 +4,14 @@ import pandas as pd
 import numpy as np
 
 class RadarPlot(html.Div):
-    def __init__(self, name, df):
+    def __init__(self, name, df, global_min_length, global_max_length, global_min_depth, global_max_depth):
         self.html_id = name.lower().replace(" ", "-")
         self.df = df
+
+        self.global_min_length = global_min_length
+        self.global_max_length = global_max_length
+        self.global_min_depth = global_min_depth
+        self.global_max_depth = global_max_depth
 
         super().__init__(
             className="graph_card",
@@ -15,6 +20,14 @@ class RadarPlot(html.Div):
                 dcc.Graph(id=self.html_id),
             ],
         )
+
+    def normalize_to_100(self, value, min_val, max_val):
+        #To convert value to a 0-100 scale
+        if pd.isna(value):
+            return 0
+        if max_val == min_val:
+            return 0
+        return 100 * (value - min_val) / (max_val - min_val)
 
     def update(self, selected_shark_type, filtered_df=None):
 
@@ -59,27 +72,39 @@ class RadarPlot(html.Div):
             avg_length = length_series.mean(skipna=True)
             if pd.isna(avg_length):
                 avg_length = 0
+            # Normalize length to 0-100
+            avg_length_norm = self.normalize_to_100(
+                avg_length, 
+                self.global_min_length, 
+                self.global_max_length
+            )
 
             # (5) average depth
             depth_series = pd.to_numeric(df_shark["Depth.of.incident.m"], errors="coerce")
             avg_depth = depth_series.mean(skipna=True)
             if pd.isna(avg_depth):
                 avg_depth = 0
+            # Normalize depth to 0-100
+            avg_depth_norm = self.normalize_to_100(
+                avg_depth, 
+                self.global_min_depth, 
+                self.global_max_depth
+            )
 
         # Prepare the data for radar
         metrics = [
             pct_injured_or_fatal,
             pct_fatal,
             pct_provoked,
-            avg_length,
-            avg_depth
+            avg_length_norm,
+            avg_depth_norm
         ]
         axis_labels = [
             "% Injured or Fatal",
             "% Fatal",
             "% Provoked",
-            "Avg Length (m)",
-            "Avg Depth (m)"
+            "Avg Length (Norm)",
+            "Avg Depth (Norm)"
         ]
 
         #Single scatterpolar trace

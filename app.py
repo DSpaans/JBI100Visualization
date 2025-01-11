@@ -14,11 +14,17 @@ if __name__ == '__main__':
     
     df = get_data()
 
+    global_min_length = df["Shark.length.m"].min(skipna=True)
+    global_max_length = df["Shark.length.m"].max(skipna=True)
+
+    global_min_depth = df["Depth.of.incident.m"].min(skipna=True)
+    global_max_depth = df["Depth.of.incident.m"].max(skipna=True)
+
     # Instantiate custom views
     scatter_map_aus = ScatterGeo("Incidents Map", df, 'Junk_for_now')
     heatmap = Heatmap("Heatmap", df)
     barchart = BarChart("Bar Chart", df)
-    radar_plot = RadarPlot("Shark Radar Plot", df)
+    radar_plot = RadarPlot("Shark Radar Plot", df, global_min_length, global_max_length, global_min_depth, global_max_depth)
 
     app.layout = html.Div(
         id="app-container",
