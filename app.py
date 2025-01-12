@@ -105,17 +105,21 @@ if __name__ == '__main__':
     #     return scatter_map_aus.update(filtered_df, selected_column)
     
     @app.callback(
-        [Output(scatter_map_aus.html_id, "figure"), Output(heatmap.html_id, "figure"), Output(barchart.html_id, "figure"), Output(radar_plot.html_id, "figure")],
-        [Input("year-slider", "value"), Input("select-hover-column", "value"), 
-         Input("select-x-heatmap", "value"), Input("select-y-heatmap", "value"),
-         Input("select-x-bar", "value"), Input("select-y-bar", "value"),
-         Input("select-radar-shark-type", "value")],
+        [Output(scatter_map_aus.html_id, "figure"), Output(heatmap.html_id, "figure"), Output(barchart.html_id, "figure"), 
+         Output(radar_plot.html_id, "figure")],
+        [Input("year-slider", "value"), Input("select-state", "value"), 
+         Input("select-hover-column", "value"), Input("select-x-heatmap", "value"), 
+         Input("select-y-heatmap", "value"), Input("select-x-bar", "value"), 
+         Input("select-y-bar", "value"), Input("select-radar-shark-type", "value")]
     )
     
-    def update_visualizations(year_range, selected_column, selected_x, selected_y, x_bar, y_bar, selected_shark_type):
-        # Filter data based on the year range
+    def update_visualizations(year_range, selected_state, selected_column, selected_x, selected_y, x_bar, y_bar, selected_shark_type):
+        # Filter data based on the year range and selected state
         low, high = year_range
-        filtered_df = df[df["Incident.year"].between(low, high)]
+        if selected_state.lower() == "All states".lower():
+            filtered_df = df[df["Incident.year"].between(low, high)]
+        else:
+            filtered_df = df[df["Incident.year"].between(low, high) & (df["State"] == selected_state)]
 
         # Update the map
         map_figure = scatter_map_aus.update(filtered_df, selected_column)
