@@ -57,22 +57,22 @@ def clean_column_name(name):
     # Capitalize each word for a more readable format
     return ' '.join(word.capitalize() for word in name.split())
 
-def generate_control_card(df, column_options, column_options_heatmap, column_options_barchart):
+def generate_control_card(df, column_options_heatmap, column_options_barchart):
     # A Div containing controls for graphs.
     shark_names = sorted(df["Shark.common.name"].dropna().unique())
 
     return html.Div(
         id="control-card",
         children=[
-            html.Div([
-                html.Label("Select column", style={"fontWeight": "bold", "fontSize": "16px", "color": TEXT_COLOR}),
-                dcc.Dropdown(
-                    id="select-hover-column",
-                    options=[{"label": clean_column_name(col), "value": col} for col in column_options],
-                    value="",
-                    style={"width": "100%", "padding": "10px", "fontSize": "14px", "borderRadius": "5px", "borderColor": "#ccc"}
-                ),
-            ], style={"marginBottom": "20px"}),
+            # html.Div([
+            #     html.Label("Select column", style={"fontWeight": "bold", "fontSize": "16px", "color": TEXT_COLOR}),
+            #     dcc.Dropdown(
+            #         id="select-hover-column",
+            #         options=[{"label": clean_column_name(col), "value": col} for col in column_options],
+            #         value="",
+            #         style={"width": "100%", "padding": "10px", "fontSize": "14px", "borderRadius": "5px", "borderColor": "#ccc"}
+            #     ),
+            # ], style={"marginBottom": "20px"}),
 
             html.Div([
                 html.Label("Select x-axis heatmap", style={"fontWeight": "bold", "fontSize": "16px", "color": TEXT_COLOR}),
@@ -125,11 +125,11 @@ def generate_control_card(df, column_options, column_options_heatmap, column_opt
         }
     )
 
-def make_menu_layout(df, column_options, column_options_heatmap, column_options_barchart):
+def make_menu_layout(df, column_options_heatmap, column_options_barchart):
     return html.Div(
         children=[
             generate_description_card(),
-            generate_control_card(df, column_options, column_options_heatmap, column_options_barchart)
+            generate_control_card(df, column_options_heatmap, column_options_barchart)
         ],
         style={
             "display": "flex", 

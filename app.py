@@ -5,7 +5,7 @@ from jbi100_app.views.visualizations.map import ScatterGeo
 from jbi100_app.views.visualizations.heatmap import Heatmap
 from jbi100_app.views.visualizations.barchart import BarChart
 from jbi100_app.views.visualizations.radarplot import RadarPlot
-from jbi100_app.config import column_options_1, column_options_heatmap, column_options_barchart
+from jbi100_app.config import column_options_heatmap, column_options_barchart
 from dash import html, dcc
 from dash.dependencies import Input, Output
 import plotly.graph_objects as go
@@ -32,7 +32,7 @@ if __name__ == '__main__':
             html.Div(
                 id="left-column",
                 className="three columns",
-                children=make_menu_layout(df, column_options_1, column_options_heatmap, column_options_barchart),
+                children=make_menu_layout(df, column_options_heatmap, column_options_barchart),
                 style={
                     "position": "fixed",
                     "top": "0",
@@ -105,19 +105,19 @@ if __name__ == '__main__':
     
     @app.callback(
         [Output(scatter_map_aus.html_id, "figure"), Output(heatmap.html_id, "figure"), Output(barchart.html_id, "figure"), Output(radar_plot.html_id, "figure")],
-        [Input("year-slider", "value"), Input("select-hover-column", "value"), 
+        [Input("year-slider", "value"), 
          Input("select-x-heatmap", "value"), Input("select-y-heatmap", "value"),
          Input("select-x-bar", "value"), Input("select-y-bar", "value"), 
          Input(scatter_map_aus.html_id, "selectedData")],
     )
     
-    def update_visualizations(year_range, selected_column, selected_x, selected_y, x_bar, y_bar, map_selected_data):
+    def update_visualizations(year_range, selected_x, selected_y, x_bar, y_bar, map_selected_data):
         # Filter data based on the year range
         low, high = year_range
         filtered_df = df[df["Incident.year"].between(low, high)]
 
         # Update the map
-        map_figure = scatter_map_aus.update(filtered_df, selected_column)
+        map_figure = scatter_map_aus.update(filtered_df)
         # Update the heatmap
         heatmap_figure = heatmap.update(selected_x, selected_y, filtered_df)
         # Update the barchart

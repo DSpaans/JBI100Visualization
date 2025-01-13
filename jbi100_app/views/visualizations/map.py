@@ -28,15 +28,15 @@ class ScatterGeo(html.Div):
         if filtered_df is None:
             filtered_df = self.df
             
-        if hover_column not in filtered_df.columns:
-            hover_text = filtered_df['Location'].fillna("Unknown")
-        else:
-            #hover_text = filtered_df['Location'] + "<br>" + hover_column + ": " + filtered_df[hover_column].astype(str)
-            hover_text = (
-                filtered_df['Location'].fillna("Unknown") + 
-                "<br>" + 
-                hover_column + ": " + 
-                filtered_df[hover_column].fillna("Unknown").astype(str)
+        #hover_text = filtered_df['Location'] + "<br>" + Indicent year + ": " + filtered_df[Incident.year].astype(str) + "<br>" + Provoked + ": " + filtered_df[Provoked/unprovoked].astype(str)
+        hover_text = (
+            filtered_df['Location'].fillna("Unknown") + 
+            "<br>" + 
+            "Incident Year: " + 
+            filtered_df['Incident.year'].fillna("Unknown").astype(str) +
+            "<br>" + 
+            "Provoked: " + 
+            filtered_df['Provoked/unprovoked'].fillna("Unknown").astype(str)
             )
 
         #Build the figure
@@ -68,12 +68,13 @@ class ScatterGeo(html.Div):
                 ),
                 margin=dict(l=10, r=10, t=40, b=10),
                 dragmode='select', #Brushing / Enable selection
+                clickmode='event+select' #Clicks can select a single point
         )
 
         # Highlight selected / unselected traces
         fig.update_traces(
             selected=dict(marker=dict(color='red', size=10)),
-            unselected=dict(marker=dict(opacity=0.4))
+            unselected=dict(marker=dict(color='blue', opacity=0.5))
         )
         
         return fig
