@@ -1,14 +1,15 @@
 from dash import dcc, html
 
-#color palette
-BACKGROUND_COLOR = "#dadbe3"  
-CARD_BACKGROUND_COLOR = "#FFFFFF"  
-TEXT_COLOR = "#222438"  
-ACCENT_COLOR = "#222438"  
-HIGHLIGHT_COLOR = "#222438"  
-SHADOW_COLOR = "rgba(0,0,0,0.1)"  
+# Color Palette
+BACKGROUND_COLOR = "#F7F7F7"  # Light gray background for the entire layout
+CARD_BACKGROUND_COLOR = "#FFFFFF"  # White background for cards
+TEXT_COLOR = "#333333"  # Dark text for readability
+ACCENT_COLOR = "#007BFF"  # Blue accent color for labels and highlights
+HIGHLIGHT_COLOR = "#FF5733"  # Accent color for important elements
+SHADOW_COLOR = "rgba(0,0,0,0.1)"  # Light shadow effect for depth
 
 def generate_description_card():
+    # A Div containing dashboard title & descriptions.
     return html.Div(
         id="description-card",
         children=[
@@ -42,12 +43,13 @@ def generate_description_card():
     )
 
 def clean_column_name(name):
-    #replace underscores and dots 
+    # Replace underscores and dots with spaces
     name = name.replace('.', ' ').replace('_', ' ')
-    #capitalize 
+    # Capitalize each word for a more readable format
     return ' '.join(word.capitalize() for word in name.split())
 
 def generate_control_card(df, column_options, column_options_heatmap, column_options_barchart):
+    # A Div containing controls for graphs.
     shark_names = sorted(df["Shark.common.name"].dropna().unique())
 
     return html.Div(
