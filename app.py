@@ -2,7 +2,6 @@ from jbi100_app.main import app
 from jbi100_app.data import get_data
 from jbi100_app.views.menu import make_menu_layout, make_time_slider
 from jbi100_app.views.visualizations.map import ScatterGeo
-from jbi100_app.views.visualizations.scatterplot import Scatterplot
 from jbi100_app.views.visualizations.heatmap import Heatmap
 from jbi100_app.views.visualizations.barchart import BarChart
 from jbi100_app.views.visualizations.radarplot import RadarPlot

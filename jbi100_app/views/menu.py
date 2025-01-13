@@ -13,31 +13,40 @@ def generate_description_card():
     return html.Div(
         id="description-card",
         children=[
-            html.H5(
-                "Sharkify", 
+            html.Img(
+                src="/assets/sharkify.png",  # Replace with your image path or URL
                 style={
-                    "color": ACCENT_COLOR, 
-                    "textAlign": "center", 
-                    "fontWeight": "bold", 
-                    "fontSize": "36px"
+                    "width": "100%",  # Set the desired width of the image
+                    "height": "auto",  # Maintain aspect ratio
+                    "display": "block",  # Center image horizontally
+                    "margin": "0 auto",  # Center image horizontally
                 }
             ),
-            html.Div(
-                id="intro",
-                children="Equipping coastguards with essential shark attack insights",
-                style={
-                    "textAlign": "center", 
-                    "color": TEXT_COLOR, 
-                    "fontSize": "20px", 
-                    "marginTop": "10px"
-                }
-            ),
+            # html.H5(
+            #     "Sharkify", 
+            #     style={
+            #         "color": ACCENT_COLOR, 
+            #         "textAlign": "center", 
+            #         "fontWeight": "bold", 
+            #         "fontSize": "36px"
+            #     }
+            # ),
+            # html.Div(
+            #     id="intro",
+            #     children="Your Guardian Eye on Shark Activity",
+            #     style={
+            #         "textAlign": "center", 
+            #         "color": ACCENT_COLOR, 
+            #         "fontSize": "20px", 
+            #         "marginTop": "0px"
+            #     }
+            # ),
         ],
         style={
             "backgroundColor": CARD_BACKGROUND_COLOR, 
             "borderRadius": "10px", 
-            "padding": "20px", 
-            "margin": "20px", 
+            "padding": "10px", 
+            "margin": "10px", 
             "boxShadow": f"0 4px 8px {SHADOW_COLOR}"
         }
     )
