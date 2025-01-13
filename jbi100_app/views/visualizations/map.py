@@ -1,7 +1,6 @@
 from dash import dcc, html
 import plotly.graph_objects as go
 
-#lolz
 class ScatterGeo(html.Div):
     def __init__(self, name, df, feature_x):
         self.html_id = name.lower().replace(" ", "-")
