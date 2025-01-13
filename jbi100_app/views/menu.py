@@ -19,20 +19,10 @@ def generate_control_card(df, column_options, column_options_heatmap, column_opt
 
     #List of all unique shark names for dropdown
     shark_names = sorted(df["Shark.common.name"].dropna().unique())
-    states = df["State"].dropna().unique().tolist()
-    states.append("All states")
-    states = sorted(states)
-
 
     return html.Div(
         id="control-card",
         children=[
-            html.Label("Select state"),
-            dcc.Dropdown(
-                id="select-state",
-                options=[{"label": state, "value": state} for state in states],
-                value="All states",
-            ),
             html.Label("Select column"),
             dcc.Dropdown(
                 id="select-hover-column",
@@ -64,7 +54,7 @@ def generate_control_card(df, column_options, column_options_heatmap, column_opt
                 options=[{"label": col, "value": col} for col in column_options_barchart],
                 value="Number_of_fatal_incidents", 
             ),
-            html.Label("Select shark type radarplot"),
+            html.Label("Select Shark Type (Radar)"),
             dcc.Dropdown(
                 id="select-radar-shark-type",
                 options=[{"label": name, "value": name} for name in shark_names],
