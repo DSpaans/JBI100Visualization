@@ -77,6 +77,12 @@ def generate_control_card(df, column_options_heatmap, column_options_barchart, r
             # ], style={"marginBottom": "20px"}),
 
             html.Div([
+                html.Label("Select time range", style={"fontWeight": "bold", "fontSize": "16px", "color": TEXT_COLOR}),
+                range_hist,
+                make_time_slider(df)
+            ], style={"marginBottom": "10px"}),
+
+            html.Div([
                 html.Label("Select x-axis heatmap", style={"fontWeight": "bold", "fontSize": "16px", "color": TEXT_COLOR}),
                 dcc.Dropdown(
                     id="select-x-heatmap",
@@ -114,12 +120,6 @@ def generate_control_card(df, column_options_heatmap, column_options_barchart, r
                     value="Number_of_fatal_incidents", 
                     style={"width": "100%", "padding": "10px", "fontSize": "14px", "borderRadius": "5px", "borderColor": "#ccc"}
                 ),
-            ], style={"marginBottom": "10px"}),
-            
-            html.Div([
-                html.Label("Select time range", style={"fontWeight": "bold", "fontSize": "16px", "color": TEXT_COLOR}),
-                range_hist,
-                make_time_slider(df)
             ], style={"marginBottom": "10px"}),
         ],
         style={
