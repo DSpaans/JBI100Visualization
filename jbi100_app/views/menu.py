@@ -104,16 +104,6 @@ def generate_control_card(df, column_options, column_options_heatmap, column_opt
                     style={"width": "100%", "padding": "10px", "fontSize": "14px", "borderRadius": "5px", "borderColor": "#ccc"}
                 ),
             ], style={"marginBottom": "20px"}),
-
-            html.Div([
-                html.Label("Select Shark Type (Radar)", style={"fontWeight": "bold", "fontSize": "16px", "color": TEXT_COLOR}),
-                dcc.Dropdown(
-                    id="select-radar-shark-type",
-                    options=[{"label": name, "value": name} for name in shark_names],
-                    value=shark_names[0] if shark_names else None,
-                    style={"width": "100%", "padding": "10px", "fontSize": "14px", "borderRadius": "5px", "borderColor": "#ccc"}
-                ),
-            ], style={"marginBottom": "20px"})
         ],
         style={
             "backgroundColor": CARD_BACKGROUND_COLOR, 
