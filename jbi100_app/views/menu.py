@@ -13,6 +13,12 @@ def generate_description_card():
         ],
     )
 
+def clean_column_name(name):
+    #cleaning option names
+    name = name.replace('.', ' ').replace('_', ' ')
+    #capitalizing the names
+    return ' '.join(word.capitalize() for word in name.split())
+
 
 def generate_control_card(df, column_options, column_options_heatmap, column_options_barchart):
     #A Div containing controls for graphs.
@@ -26,32 +32,32 @@ def generate_control_card(df, column_options, column_options_heatmap, column_opt
             html.Label("Select column"),
             dcc.Dropdown(
                 id="select-hover-column",
-                options=[{"label": col, "value": col} for col in column_options],
+                options=[{"label": clean_column_name(col), "value": col} for col in column_options],
                 value="",
             ),
             html.Label("Select x-axis heatmap"),
             dcc.Dropdown(
                 id="select-x-heatmap",
-                options=[{"label": col, "value": col} for col in column_options_heatmap],
+                options=[{"label": clean_column_name(col), "value": col} for col in column_options_heatmap],
                 value="Injury.category",
             ),
             html.Label("Select y-axis heatmap"),
             dcc.Dropdown(
                 id="select-y-heatmap",
-                options=[{"label": col, "value": col} for col in column_options_heatmap],
+                options=[{"label": clean_column_name(col), "value": col} for col in column_options_heatmap],
                 value="Shark.common.name",
             ),
             html.Label("Select x-axis barchart"),
             dcc.Dropdown(
                 id="select-x-bar",
-                options=[{"label": col, "value": col} for col in column_options_barchart],
+                options=[{"label": clean_column_name(col), "value": col} for col in column_options_barchart],
                 value="Injury.category",
             ),
 
             html.Label("Select y-axis barchart"),
             dcc.Dropdown(
                 id="select-y-bar",
-                options=[{"label": col, "value": col} for col in column_options_barchart],
+                options=[{"label": clean_column_name(col), "value": col} for col in column_options_barchart],
                 value="Number_of_fatal_incidents", 
             ),
             html.Label("Select Shark Type (Radar)"),
