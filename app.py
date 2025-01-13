@@ -5,6 +5,7 @@ from jbi100_app.views.visualizations.map import ScatterGeo
 from jbi100_app.views.visualizations.heatmap import Heatmap
 from jbi100_app.views.visualizations.barchart import BarChart
 from jbi100_app.views.visualizations.radarplot import RadarPlot
+from jbi100_app.views.visualizations.histogram import Histogram
 from jbi100_app.config import column_options_heatmap, column_options_barchart
 from dash import html, dcc
 from dash.dependencies import Input, Output
@@ -24,6 +25,7 @@ if __name__ == '__main__':
     heatmap = Heatmap("Heatmap", df)
     barchart = BarChart("Bar Chart", df)
     radar_plot = RadarPlot("Shark Radar Plot", df, global_min_length, global_max_length, global_min_depth, global_max_depth)
+    time_hist = Histogram(name=None, df=df, show_title=False)
 
     app.layout = html.Div(
         id="app-container",
@@ -32,7 +34,7 @@ if __name__ == '__main__':
             html.Div(
                 id="left-column",
                 className="three columns",
-                children=make_menu_layout(df, column_options_heatmap, column_options_barchart),
+                children=make_menu_layout(df, column_options_heatmap, column_options_barchart, time_hist),
                 style={
                     "position": "fixed",
                     "top": "0",
@@ -67,22 +69,6 @@ if __name__ == '__main__':
                 }
             ),
 
-            # Right column
-            html.Div(
-                id="range-slider-container",
-                className="one columns",
-                children=[make_time_slider(df)],
-                style={
-                    "position": "fixed",
-                    "bottom": "0",
-                    "right": "0",
-                    "width": "5%",
-                    "height": "100%",
-                    "padding": "5px",
-                    "background-color": "#f8f9fa",
-                    "overflow": "auto",
-                },
-                ),
         ],
     )
 
@@ -104,7 +90,13 @@ if __name__ == '__main__':
     #     return scatter_map_aus.update(filtered_df, selected_column)
     
     @app.callback(
-        [Output(scatter_map_aus.html_id, "figure"), Output(heatmap.html_id, "figure"), Output(barchart.html_id, "figure"), Output(radar_plot.html_id, "figure")],
+        [
+            Output(scatter_map_aus.html_id, "figure"),
+            Output(heatmap.html_id, "figure"),
+            Output(barchart.html_id, "figure"),
+            Output(radar_plot.html_id, "figure"),
+            Output(time_hist.html_id, "figure")
+        ],
         [Input("year-slider", "value"), 
          Input("select-x-heatmap", "value"), Input("select-y-heatmap", "value"),
          Input("select-x-bar", "value"), Input("select-y-bar", "value"), 
@@ -135,8 +127,12 @@ if __name__ == '__main__':
                 template="plotly_white",
                 title_text="No Shark Selected"
         )
+            
+        # Update the histogram
+        histogram_figure = time_hist.update(year_range)
+        
 
-        return map_figure, heatmap_figure, barchart_figure, radar_figure
+        return map_figure, heatmap_figure, barchart_figure, radar_figure, histogram_figure
     
     app.run_server(debug=True, dev_tools_ui=False)
     

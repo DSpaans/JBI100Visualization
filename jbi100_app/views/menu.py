@@ -1,4 +1,6 @@
 from dash import dcc, html
+from jbi100_app.views.visualizations.histogram import Histogram
+import plotly.graph_objects as go
 
 # Color Palette
 BACKGROUND_COLOR = "#F7F7F7"  # Light gray background for the entire layout
@@ -57,7 +59,7 @@ def clean_column_name(name):
     # Capitalize each word for a more readable format
     return ' '.join(word.capitalize() for word in name.split())
 
-def generate_control_card(df, column_options_heatmap, column_options_barchart):
+def generate_control_card(df, column_options_heatmap, column_options_barchart, range_hist):
     # A Div containing controls for graphs.
     shark_names = sorted(df["Shark.common.name"].dropna().unique())
 
@@ -112,7 +114,13 @@ def generate_control_card(df, column_options_heatmap, column_options_barchart):
                     value="Number_of_fatal_incidents", 
                     style={"width": "100%", "padding": "10px", "fontSize": "14px", "borderRadius": "5px", "borderColor": "#ccc"}
                 ),
-            ], style={"marginBottom": "20px"}),
+            ], style={"marginBottom": "10px"}),
+            
+            html.Div([
+                html.Label("Select time range", style={"fontWeight": "bold", "fontSize": "16px", "color": TEXT_COLOR}),
+                range_hist,
+                make_time_slider(df)
+            ], style={"marginBottom": "10px"}),
         ],
         style={
             "backgroundColor": CARD_BACKGROUND_COLOR, 
@@ -125,11 +133,11 @@ def generate_control_card(df, column_options_heatmap, column_options_barchart):
         }
     )
 
-def make_menu_layout(df, column_options_heatmap, column_options_barchart):
+def make_menu_layout(df, column_options_heatmap, column_options_barchart, range_hist):
     return html.Div(
         children=[
             generate_description_card(),
-            generate_control_card(df, column_options_heatmap, column_options_barchart)
+            generate_control_card(df, column_options_heatmap, column_options_barchart, range_hist)
         ],
         style={
             "display": "flex", 
@@ -146,24 +154,22 @@ def make_time_slider(df):
     return html.Div(
         id="time-slider",
         children=[
-            html.Label("Time period", style={"fontWeight": "bold", "fontSize": "16px", "color": TEXT_COLOR}),
+            #html.Label("Set time period", style={"fontWeight": "bold", "fontSize": "16px", "color": TEXT_COLOR}),
             dcc.RangeSlider(
                 id="year-slider",
                 min=min_year,
                 max=max_year,
                 marks=None,
-                vertical=True,
                 value=[min_year, max_year],
-                tooltip={"placement": "left", "always_visible": True},
+                tooltip={"placement": "bottom", "always_visible": True},
                 step=1,
-                verticalHeight=600,
             ),
         ],
         style={
             "backgroundColor": CARD_BACKGROUND_COLOR, 
             "borderRadius": "10px", 
-            "padding": "20px", 
-            "marginTop": "30px", 
+            "padding": "10px", 
+            "marginTop": "10px", 
             "boxShadow": f"0 4px 8px {SHADOW_COLOR}"
         }
     )
