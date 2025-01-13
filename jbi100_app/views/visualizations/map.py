@@ -13,8 +13,11 @@ class ScatterGeo(html.Div):
             style={"justifyContent": "center", "height": "100%"},
             children=[
                 html.H6(name),
-                dcc.Graph(id=self.html_id, figure=self.update(),
-                style={'height': '45vh', 'width': '100%'}
+                dcc.Graph(
+                    id=self.html_id,
+                    figure=self.update(),  # initial figure (unfiltered)
+                    style={'height': '45vh', 'width': '100%'},
+                    config={'displayModeBar': True, 'scrollZoom': True}
                 )
             ],
         )
@@ -26,7 +29,7 @@ class ScatterGeo(html.Div):
             filtered_df = self.df
             
         if hover_column not in filtered_df.columns:
-            hover_text = filtered_df['Location']
+            hover_text = filtered_df['Location'].fillna("Unknown")
         else:
             #hover_text = filtered_df['Location'] + "<br>" + hover_column + ": " + filtered_df[hover_column].astype(str)
             hover_text = (
@@ -37,17 +40,22 @@ class ScatterGeo(html.Div):
             )
 
         #Build the figure
-        fig = go.Figure(data=go.Scattergeo(
-            lon = filtered_df['Longitude'],
-            lat = filtered_df['Latitude'],
-            text = hover_text,
-            mode = 'markers',
+        fig = go.Figure(
+    data=[
+        go.Scattergeo(
+            lon=filtered_df['Longitude'],
+            lat=filtered_df['Latitude'],
+            text=hover_text,
+            mode='markers',
+            customdata=filtered_df["Shark.common.name"],
             marker=dict(
-                    color='blue',   # Change marker color as needed
-                    opacity=0.7,    # I lowered opacity to see overlapping points
-                    size=8)
+                color='blue',
+                opacity=0.7,
+                size=8
             )
         )
+    ]
+)
 
         fig.update_layout(
             title = '',
@@ -58,7 +66,14 @@ class ScatterGeo(html.Div):
                 showland=True,
                 landcolor='rgb(217, 217, 217)',
                 ),
-                margin=dict(l=10, r=10, t=40, b=10)
+                margin=dict(l=10, r=10, t=40, b=10),
+                dragmode='select', #Brushing / Enable selection
+        )
+
+        # Highlight selected / unselected traces
+        fig.update_traces(
+            selected=dict(marker=dict(color='red', size=10)),
+            unselected=dict(marker=dict(opacity=0.4))
         )
         
         return fig

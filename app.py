@@ -9,6 +9,7 @@ from jbi100_app.views.visualizations.radarplot import RadarPlot
 from jbi100_app.config import column_options_1, column_options_heatmap, column_options_barchart
 from dash import html, dcc
 from dash.dependencies import Input, Output
+import plotly.graph_objects as go
 
 if __name__ == '__main__':
     
@@ -16,7 +17,6 @@ if __name__ == '__main__':
 
     global_min_length = df["Shark.length.m"].min(skipna=True)
     global_max_length = df["Shark.length.m"].max(skipna=True)
-
     global_min_depth = df["Depth.of.incident.m"].min(skipna=True)
     global_max_depth = df["Depth.of.incident.m"].max(skipna=True)
 
@@ -108,11 +108,11 @@ if __name__ == '__main__':
         [Output(scatter_map_aus.html_id, "figure"), Output(heatmap.html_id, "figure"), Output(barchart.html_id, "figure"), Output(radar_plot.html_id, "figure")],
         [Input("year-slider", "value"), Input("select-hover-column", "value"), 
          Input("select-x-heatmap", "value"), Input("select-y-heatmap", "value"),
-         Input("select-x-bar", "value"), Input("select-y-bar", "value"),
-         Input("select-radar-shark-type", "value")],
+         Input("select-x-bar", "value"), Input("select-y-bar", "value"), 
+         Input(scatter_map_aus.html_id, "selectedData")],
     )
     
-    def update_visualizations(year_range, selected_column, selected_x, selected_y, x_bar, y_bar, selected_shark_type):
+    def update_visualizations(year_range, selected_column, selected_x, selected_y, x_bar, y_bar, map_selected_data):
         # Filter data based on the year range
         low, high = year_range
         filtered_df = df[df["Incident.year"].between(low, high)]
@@ -124,7 +124,18 @@ if __name__ == '__main__':
         # Update the barchart
         barchart_figure = barchart.update(x_bar, y_bar, filtered_df)
         # Update the radarplot
-        radar_figure = radar_plot.update(selected_shark_type, filtered_df)
+        if map_selected_data and "points" in map_selected_data and len(map_selected_data["points"]) > 0:
+            # The user selected 1+ points on the map
+            selected_shark_types = {pt["customdata"] for pt in map_selected_data["points"]}
+            # Multi-shark radar
+            radar_figure = radar_plot.update_multiple(list(selected_shark_types), filtered_df)
+        else:
+            # No points selected => show an empty radar or a placeholder figure
+            radar_figure = go.Figure()
+            radar_figure.update_layout(
+                template="plotly_white",
+                title_text="No Shark Selected"
+        )
 
         return map_figure, heatmap_figure, barchart_figure, radar_figure
     

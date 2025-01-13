@@ -24,7 +24,7 @@ def generate_control_card(df, column_options, column_options_heatmap, column_opt
     #A Div containing controls for graphs.
 
     #List of all unique shark names for dropdown
-    shark_names = sorted(df["Shark.common.name"].dropna().unique())
+    #shark_names = sorted(df["Shark.common.name"].dropna().unique())
 
     return html.Div(
         id="control-card",
@@ -60,12 +60,12 @@ def generate_control_card(df, column_options, column_options_heatmap, column_opt
                 options=[{"label": clean_column_name(col), "value": col} for col in column_options_barchart],
                 value="Number_of_fatal_incidents", 
             ),
-            html.Label("Select Shark Type (Radar)"),
-            dcc.Dropdown(
-                id="select-radar-shark-type",
-                options=[{"label": name, "value": name} for name in shark_names],
-                value=shark_names[0] if shark_names else None,
-            ),
+            # html.Label("Select Shark Type (Radar)"),
+            # dcc.Dropdown(
+            #     id="select-radar-shark-type",
+            #     options=[{"label": name, "value": name} for name in shark_names],
+            #     value=shark_names[0] if shark_names else None,
+            # ),
         ], style={"textAlign": "float-left"}
     )
 
