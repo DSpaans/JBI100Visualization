@@ -12,6 +12,7 @@ SHADOW_COLOR = "rgba(0,0,0,0.1)"  # Light shadow effect for depth
 
 def generate_description_card():
     # A Div containing dashboard title & descriptions.
+    
     return html.Div(
         id="description-card",
         children=[
@@ -61,7 +62,10 @@ def clean_column_name(name):
 
 def generate_control_card(df, column_options_heatmap, column_options_barchart, range_hist):
     # A Div containing controls for graphs.
-    
+    states = df["State"].dropna().unique().tolist()
+    states.append("All states")
+    states = sorted(states)
+
     return html.Div(
         id="control-card",
         children=[
@@ -71,15 +75,28 @@ def generate_control_card(df, column_options_heatmap, column_options_barchart, r
                 make_time_slider(df)
             ], style={"marginBottom": "10px"}),
 
+            html.Hr(style={"borderTop": "1px solid #ccc", "margin": "10px 0"}),
+
+            html.Div([
+                html.Label("Select state", style={"fontWeight": "bold", "fontSize": "16px", "color": TEXT_COLOR}),
+                dcc.Dropdown(
+                    id="select-state",
+                    options=[{"label": state, "value": state} for state in states],
+                    value="All states",
+                ),
+            ], style={"marginBottom": "5px"}),
+
+            html.Hr(style={"borderTop": "1px solid #ccc", "margin": "10px 0"}),
+
             html.Div([
                 html.Label("Select x-axis heatmap", style={"fontWeight": "bold", "fontSize": "16px", "color": TEXT_COLOR}),
                 dcc.Dropdown(
                     id="select-x-heatmap",
                     options=[{"label": clean_column_name(col), "value": col} for col in column_options_heatmap],
                     value="Injury.category",
-                    style={"width": "100%", "padding": "10px", "fontSize": "14px", "borderRadius": "5px", "borderColor": "#ccc"}
+                    style={"width": "100%", "fontSize": "14px", "borderRadius": "5px", "borderColor": "#ccc"}
                 ),
-            ], style={"marginBottom": "20px"}),
+            ], style={"marginBottom": "5px"}),
 
             html.Div([
                 html.Label("Select y-axis heatmap", style={"fontWeight": "bold", "fontSize": "16px", "color": TEXT_COLOR}),
@@ -87,9 +104,11 @@ def generate_control_card(df, column_options_heatmap, column_options_barchart, r
                     id="select-y-heatmap",
                     options=[{"label": clean_column_name(col), "value": col} for col in column_options_heatmap],
                     value="Shark.common.name",
-                    style={"width": "100%", "padding": "10px", "fontSize": "14px", "borderRadius": "5px", "borderColor": "#ccc"}
+                    style={"width": "100%", "fontSize": "14px", "borderRadius": "5px", "borderColor": "#ccc"}
                 ),
             ], style={"marginBottom": "20px"}),
+
+            html.Hr(style={"borderTop": "1px solid #ccc", "margin": "10px 0"}),
 
             html.Div([
                 html.Label("Select x-axis barchart", style={"fontWeight": "bold", "fontSize": "16px", "color": TEXT_COLOR}),
@@ -97,9 +116,9 @@ def generate_control_card(df, column_options_heatmap, column_options_barchart, r
                     id="select-x-bar",
                     options=[{"label": clean_column_name(col), "value": col} for col in column_options_barchart],
                     value="Injury.category",
-                    style={"width": "100%", "padding": "10px", "fontSize": "14px", "borderRadius": "5px", "borderColor": "#ccc"}
+                    style={"width": "100%", "fontSize": "14px", "borderRadius": "5px", "borderColor": "#ccc"}
                 ),
-            ], style={"marginBottom": "20px"}),
+            ], style={"marginBottom": "5px"}),
 
             html.Div([
                 html.Label("Select y-axis barchart", style={"fontWeight": "bold", "fontSize": "16px", "color": TEXT_COLOR}),
@@ -107,7 +126,7 @@ def generate_control_card(df, column_options_heatmap, column_options_barchart, r
                     id="select-y-bar",
                     options=[{"label": clean_column_name(col), "value": col} for col in column_options_barchart],
                     value="Number_of_fatal_incidents", 
-                    style={"width": "100%", "padding": "10px", "fontSize": "14px", "borderRadius": "5px", "borderColor": "#ccc"}
+                    style={"width": "100%", "fontSize": "14px", "borderRadius": "5px", "borderColor": "#ccc"}
                 ),
             ], style={"marginBottom": "10px"}),
         ],
