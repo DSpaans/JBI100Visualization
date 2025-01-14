@@ -1,5 +1,6 @@
 from dash import dcc, html
 import plotly.graph_objects as go
+from jbi100_app.config import AU_CITIES
 
 class ScatterGeo(html.Div):
     def __init__(self, name, df):
@@ -47,20 +48,40 @@ class ScatterGeo(html.Div):
 
         #Build the figure
         fig = go.Figure(
-            data=[
-                go.Scattergeo(
-                    lon=filtered_df['Longitude'],
-                    lat=filtered_df['Latitude'],
-                    text=hover_text,
-                    mode='markers',
-                    customdata= filtered_df[['UIN', 'Shark.common.name']].values,
-                    marker=dict(
-                        color='blue',
-                        opacity=1,
-                        size=8
+                data=[
+                    go.Scattergeo(
+                        lon=filtered_df['Longitude'],
+                        lat=filtered_df['Latitude'],
+                        text=hover_text,
+                        mode='markers',
+                        showlegend=False ,
+                        hovertemplate="%{text}<extra></extra>",  # Removes "trace 0/1" text
+                        customdata= filtered_df[['UIN', 'Shark.common.name']].values,
+                        marker=dict(
+                            color='blue',
+                            opacity=0.7,
+                            size=8
                     )
                 )
             ]
+        )
+        
+        fig.add_trace(
+            go.Scattergeo(
+                lon=AU_CITIES['Longitude'],
+                lat=AU_CITIES['Latitude'],
+                text=AU_CITIES['City'],
+                mode='markers+text',
+                hoverinfo='none',
+                showlegend=False,
+                hovertemplate="%{text}<extra></extra>",
+                textposition='top center',
+                marker=dict(
+                    color='black',
+                    opacity=0.7,
+                    size=4,
+                ),
+            )
         )
 
         fig.update_layout(
