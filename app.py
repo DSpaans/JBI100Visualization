@@ -62,7 +62,7 @@ if __name__ == '__main__':
                     radar_plot
                 ],
                 style={
-                    "width": "70%",
+                    "width": "75%",
                     "margin-left": "25%",
                     "padding": "10px",
                     "overflow": "auto",
