@@ -59,7 +59,7 @@ class ScatterGeo(html.Div):
                         customdata= filtered_df[['UIN', 'Shark.common.name']].values,
                         marker=dict(
                             color='blue',
-                            opacity=0.7,
+                            opacity=1,
                             size=8
                     )
                 )
@@ -78,7 +78,7 @@ class ScatterGeo(html.Div):
                 textposition='top center',
                 marker=dict(
                     color='black',
-                    opacity=0.7,
+                    opacity=1,
                     size=4,
                 ),
             )
