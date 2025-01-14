@@ -2,7 +2,6 @@ from dash import dcc, html
 import plotly.graph_objects as go
 import plotly.express as px
 import pandas as pd
-import numpy as np
 import itertools
 
 class BarChart(html.Div):
@@ -20,51 +19,63 @@ class BarChart(html.Div):
         )
 
     def update(self, selected_x, selected_y, filtered_df=None):
-        # Barchart update
-        # If y column is numeric, we group the x column items and sum the numeric data. 
-        # If y column is not numeric, we do a count of rows for each (x,y) combination, then sum across y to get one bar per category of x
         if filtered_df is None:
             filtered_df = self.df
 
-        if pd.api.types.is_numeric_dtype(filtered_df[selected_y]):
+        # If selected_y is 'victim.injury', we apply the injury-specific logic
+        if selected_y == 'Victim.injury':
+            valid_injury_categories = ['fatal', 'injured', 'uninjured']
+            filtered_df = filtered_df[filtered_df['Victim.injury'].isin(valid_injury_categories)]
+
+            # Aggregate the data for the selected_x and the victim.injury categories
             agg_data = (
                 filtered_df
-                .groupby(selected_x)[selected_y]
-                .sum()  # or .mean(), .count(), etc.
-                .reset_index()
+                .groupby([selected_x, 'Victim.injury'])
+                .size()
+                .reset_index(name='Count')
             )
-            y_label = f"Sum of {selected_y}"
-            y_values = agg_data[selected_y].values
+
+            y_label = "Injury Status"
+            x_values = agg_data[selected_x].values
+            y_values = agg_data['Count'].values
+
         else:
-            agg_data = (
-                filtered_df
-                .groupby([selected_x, selected_y])
-                .size()
-                .reset_index(name='Count')
-            )
-            
-            agg_data = (
-                filtered_df
-                .groupby([selected_x, selected_y])
-                .size()
-                .reset_index(name='Count')
-            )
+            # General case for other numeric or categorical columns
+            if pd.api.types.is_numeric_dtype(filtered_df[selected_y]):
+                agg_data = (
+                    filtered_df
+                    .groupby(selected_x)[selected_y]
+                    .sum()  # or .mean(), .count(), etc.
+                    .reset_index()
+                )
+                y_label = f"Sum of {selected_y}"
+                y_values = agg_data[selected_y].values
+            else:
+                agg_data = (
+                    filtered_df
+                    .groupby([selected_x, selected_y])
+                    .size()
+                    .reset_index(name='Count')
+                )
+                y_label = f"Count of {selected_y}"
+                y_values = agg_data['Count'].values
 
-        x_values = agg_data[selected_x].values
+            # For other types of charts, use a default color palette
+            x_values = agg_data[selected_x].values
+            palette_alphabet = px.colors.qualitative.Alphabet  # 26 distinct colors
+            color_cycle = itertools.cycle(palette_alphabet)
+            bar_colors = [next(color_cycle) for _ in range(len(x_values))]
 
-        palette_alphabet = px.colors.qualitative.Alphabet  # 26 distinct colors
-        color_cycle = itertools.cycle(palette_alphabet)
-        bar_colors = [next(color_cycle) for _ in range(len(x_values))]
-
-        # Create Bar chart
+        # Create the Bar chart
         fig = go.Figure(
             data=go.Bar(
                 x=x_values,
                 y=y_values,
-                marker_color=bar_colors
+                marker_color=bar_colors  # Apply color to bars, not y-axis labels
             )
         )
 
+        # Update layout with custom y_label and x/y titles
         fig.update_layout(
             xaxis_title=selected_x,
             yaxis_title=y_label,
