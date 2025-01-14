@@ -21,7 +21,7 @@ if __name__ == '__main__':
     global_max_depth = df["Depth.of.incident.m"].max(skipna=True)
 
     # Instantiate custom views
-    scatter_map_aus = ScatterGeo("Incidents Map", df, 'Junk_for_now')
+    scatter_map_aus = ScatterGeo("Incidents Map", df)
     heatmap = Heatmap("Heatmap", df)
     barchart = BarChart("Bar Chart", df)
     radar_plot = RadarPlot("Shark Radar Plot", df, global_min_length, global_max_length, global_min_depth, global_max_depth)
@@ -90,47 +90,49 @@ if __name__ == '__main__':
     #     return scatter_map_aus.update(filtered_df, selected_column)
     
     @app.callback(
-        [
-            Output(scatter_map_aus.html_id, "figure"),
-            Output(heatmap.html_id, "figure"),
-            Output(barchart.html_id, "figure"),
-            Output(radar_plot.html_id, "figure"),
-            Output(time_hist.html_id, "figure")
-        ],
+        [Output(scatter_map_aus.html_id, "figure"),
+         Output(heatmap.html_id, "figure"),
+         Output(barchart.html_id, "figure"),
+         Output(radar_plot.html_id, "figure"),
+         Output(time_hist.html_id, "figure")],
         [Input("year-slider", "value"), 
-         Input("select-x-heatmap", "value"), Input("select-y-heatmap", "value"),
-         Input("select-x-bar", "value"), Input("select-y-bar", "value"), 
+         Input("select-x-heatmap", "value"), 
+         Input("select-y-heatmap", "value"),
+         Input("select-x-bar", "value"), 
+         Input("select-y-bar", "value"), 
          Input(scatter_map_aus.html_id, "selectedData")],
     )
     
-    def update_visualizations(year_range, selected_x, selected_y, x_bar, y_bar, map_selected_data):
-        # Filter data based on the year range
+    def update_visualizations(year_range, x_heat, y_heat, x_bar, y_bar, map_selected_data):
+        # Extract year range
         low, high = year_range
         filtered_df = df[df["Incident.year"].between(low, high)]
 
         # Update the map
-        map_figure = scatter_map_aus.update(filtered_df)
-        # Update the heatmap
-        heatmap_figure = heatmap.update(selected_x, selected_y, filtered_df)
-        # Update the barchart
-        barchart_figure = barchart.update(x_bar, y_bar, filtered_df)
-        # Update the radarplot
+        map_figure = scatter_map_aus.update(filtered_df, map_selected_data)
+
+        # Check if points are selected on the map
         if map_selected_data and "points" in map_selected_data and len(map_selected_data["points"]) > 0:
-            # The user selected 1+ points on the map
-            selected_shark_types = {pt["customdata"] for pt in map_selected_data["points"]}
-            # Multi-shark radar
+            selected_uins = [pt["customdata"][0] for pt in map_selected_data["points"]]
+            filtered_df = filtered_df[filtered_df["UIN"].isin(selected_uins)]  # Filter based on selected points
+            # Radar plot update
+            selected_shark_types = {pt["customdata"][1] for pt in map_selected_data["points"]}
             radar_figure = radar_plot.update_multiple(list(selected_shark_types), filtered_df)
         else:
-            # No points selected => show an empty radar or a placeholder figure
             radar_figure = go.Figure()
             radar_figure.update_layout(
                 template="plotly_white",
                 title_text="No Shark Selected"
-        )
-            
-        # Update the histogram
-        histogram_figure = time_hist.update(year_range)
+            )
+
+        # Heatmap update
+        heatmap_figure = heatmap.update(x_heat, y_heat, filtered_df)
         
+        # Barchart update
+        barchart_figure = barchart.update(x_bar, y_bar, filtered_df)
+        
+        # Histogram updatez
+        histogram_figure = time_hist.update(year_range)
 
         return map_figure, heatmap_figure, barchart_figure, radar_figure, histogram_figure
     

@@ -16,11 +16,15 @@ class Heatmap(html.Div):
             ],
         )
 
-    def update(self, selected_x, selected_y, filtered_df=None):
+    def update(self, selected_x, selected_y, filtered_df=None, selected_data=None):
         # Generate the one-dimensional heatmap figure
         if filtered_df is None:
             filtered_df = self.df
 
+        """        if selected_data and "points" in selected_data and len(selected_data["points"]) > 0:
+            selected_ids = {pt["pointIndex"] for pt in selected_data["points"]}
+            filtered_df = filtered_df.iloc[list(selected_ids)]
+        """
         # Prepare data for one-dimensional heatmap
         grouped_data = filtered_df.groupby([selected_x, selected_y]).size().reset_index(name='Count')
 

@@ -61,21 +61,10 @@ def clean_column_name(name):
 
 def generate_control_card(df, column_options_heatmap, column_options_barchart, range_hist):
     # A Div containing controls for graphs.
-    shark_names = sorted(df["Shark.common.name"].dropna().unique())
-
+    
     return html.Div(
         id="control-card",
         children=[
-            # html.Div([
-            #     html.Label("Select column", style={"fontWeight": "bold", "fontSize": "16px", "color": TEXT_COLOR}),
-            #     dcc.Dropdown(
-            #         id="select-hover-column",
-            #         options=[{"label": clean_column_name(col), "value": col} for col in column_options],
-            #         value="",
-            #         style={"width": "100%", "padding": "10px", "fontSize": "14px", "borderRadius": "5px", "borderColor": "#ccc"}
-            #     ),
-            # ], style={"marginBottom": "20px"}),
-
             html.Div([
                 html.Label("Select time range", style={"fontWeight": "bold", "fontSize": "16px", "color": TEXT_COLOR}),
                 range_hist,

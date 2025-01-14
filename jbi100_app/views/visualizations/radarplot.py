@@ -200,7 +200,7 @@ class RadarPlot(html.Div):
             showlegend=True,
             margin=dict(l=60, r=60, t=40, b=40),
             template="plotly_white",
-            title_text="Radar for Selected Sharks"
+            title_text=""
         )
 
         return fig
