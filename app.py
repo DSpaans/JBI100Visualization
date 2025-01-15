@@ -60,6 +60,7 @@ if __name__ == '__main__':
                                 style={
                                     "width": "50%",
                                     "padding": "0px",
+                                    "margin-right": "5px"
                                 }
                             ),
                             html.Div(
@@ -67,6 +68,7 @@ if __name__ == '__main__':
                                 style={
                                     "width": "50%",
                                     "padding": "0px",
+                                    "margin-left": "5px"
                                 }
                             ),
                         ],
@@ -77,8 +79,8 @@ if __name__ == '__main__':
                     barchart,
                 ],
                 style={
-                    "width": "75%",
-                    "margin-left": "25%",
+                    "width": "74%",
+                    "margin-left": "26%",
                     "padding": "10px",
                     "overflow": "auto",
                 }
