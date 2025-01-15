@@ -128,70 +128,85 @@ if __name__ == '__main__':
                               x_heat, y_heat, x_bar, y_bar, map_selected_data):
         # Extract year range
         low, high = year_range
-        partial_filtered_df = df[df["Incident.year"].between(low, high)]
-        
-        # Check if points are selected on the map (Brushing or click)
+        partial_states = df[df["Incident.year"].between(low, high)]
+
         if map_selected_data and "points" in map_selected_data and len(map_selected_data["points"]) > 0:
             selected_uins = [pt["customdata"][0] for pt in map_selected_data["points"]]
-            partial_filtered_df = partial_filtered_df[partial_filtered_df["UIN"].isin(selected_uins)]  # Filter based on selected points
+            partial_states = partial_states[partial_states["UIN"].isin(selected_uins)]
+
+        # If the user has picked a specific Shark, limit partial_states to that shark
+        if selected_shark != "All sharks":
+            partial_states = partial_states[partial_states["Shark.common.name"] == selected_shark]
             
+        partial_sharks = df[df["Incident.year"].between(low, high)]
+
+        if map_selected_data and "points" in map_selected_data and len(map_selected_data["points"]) > 0:
+            selected_uins = [pt["customdata"][0] for pt in map_selected_data["points"]]
+            partial_sharks = partial_sharks[partial_sharks["UIN"].isin(selected_uins)]
+
+        # If the user has picked a specific State, limit partial_sharks to that state
+        if selected_state != "All states":
+            partial_sharks = partial_sharks[partial_sharks["State"] == selected_state]
+        #--------
         
-        # -- Build State dropdown options:
-        if partial_filtered_df.empty:
-            # No data left
+        if partial_states.empty:
             states_options = [{"label": "All states (0)", "value": "All states"}]
         else:
-            # Group by State to get counts
-            states_counts = (partial_filtered_df
-                            .dropna(subset=["State"])    # remove NaNs
-                            .groupby("State")["State"]
-                            .count()
-                            .sort_values(ascending=True))
-            # Create our list of dict options
+            # Count how many rows exist for each state
+            states_counts = (
+                partial_states.dropna(subset=["State"])
+                .groupby("State")["State"].count()
+                .sort_values(ascending=True)
+            )
+            # Start with 'All states (XYZ)'
             states_options = [
                 {
-                    "label": f"All states ({len(partial_filtered_df)})",
+                    "label": f"All states ({len(partial_states)})",
                     "value": "All states",
                 }
             ]
             for st, count in states_counts.items():
                 states_options.append({"label": f"{st} ({count})", "value": st})
-
-        # -- Build Shark dropdown options:
-        if partial_filtered_df.empty:
-            sharks_options = [{"label": "All sharks (0)", "value": "All sharks"}]
-        else:
-            sharks_counts = (partial_filtered_df
-                            .dropna(subset=["Shark.common.name"])
-                            .groupby("Shark.common.name")["Shark.common.name"]
-                            .count()
-                            .sort_values(ascending=True))
-            sharks_options = [
-                {
-                    "label": f"All sharks ({len(partial_filtered_df)})",
-                    "value": "All sharks",
-                }
-            ]
-            for sh, count in sharks_counts.items():
-                sharks_options.append({"label": f"{sh} ({count})", "value": sh})    
-        #-----
+                
+            if partial_sharks.empty:
+                sharks_options = [{"label": "All sharks (0)", "value": "All sharks"}]
+            else:
+                # Count how many rows exist for each shark
+                sharks_counts = (
+                    partial_sharks.dropna(subset=["Shark.common.name"])
+                    .groupby("Shark.common.name")["Shark.common.name"].count()
+                    .sort_values(ascending=True)
+                )
+                sharks_options = [
+                    {
+                        "label": f"All sharks ({len(partial_sharks)})",
+                        "value": "All sharks",
+                    }
+                ]
+                for sh, count in sharks_counts.items():
+                    sharks_options.append({"label": f"{sh} ({count})", "value": sh})
+                    
+        final_df = df[df["Incident.year"].between(low, high)]
         
-        final_filtered_df = partial_filtered_df.copy()
-        # Filter based on dropdowns
-        if selected_state != "All states" and not final_filtered_df.empty:
-            final_filtered_df = final_filtered_df[final_filtered_df["State"] == selected_state]
+        # Check if points are selected on the map (Brushing or click)
+        if map_selected_data and "points" in map_selected_data and len(map_selected_data["points"]) > 0:
+            selected_uins = [pt["customdata"][0] for pt in map_selected_data["points"]]
+            final_df = final_df[final_df["UIN"].isin(selected_uins)]  # Filter based on selected points
+            
+        if selected_state != "All states":
+            final_df = final_df[final_df["State"] == selected_state]
 
-        if selected_shark != "All sharks" and not final_filtered_df.empty:
-            final_filtered_df = final_filtered_df[final_filtered_df["Shark.common.name"] == selected_shark]
+        if selected_shark != "All sharks":
+            final_df = final_df[final_df["Shark.common.name"] == selected_shark]
         
         # Update the map
-        map_figure = scatter_map_aus.update(final_filtered_df, map_selected_data)
+        map_figure = scatter_map_aus.update(final_df, map_selected_data)
 
         
         # Radar plot: if user brushed points, we might have multiple sharks selected
         if map_selected_data and "points" in map_selected_data and len(map_selected_data["points"]) > 0:
             selected_shark_types = {pt["customdata"][1] for pt in map_selected_data["points"]}
-            radar_figure = radar_plot.update_multiple(list(selected_shark_types), final_filtered_df)
+            radar_figure = radar_plot.update_multiple(list(selected_shark_types), final_df)
         else:
             radar_figure = go.Figure()
             axis_labels = [
@@ -225,10 +240,10 @@ if __name__ == '__main__':
             )
 
         # Heatmap update
-        heatmap_figure = heatmap.update(x_heat, y_heat, final_filtered_df)
+        heatmap_figure = heatmap.update(x_heat, y_heat, final_df)
         
         # Barchart update
-        barchart_figure = barchart.update(x_bar, y_bar, final_filtered_df)
+        barchart_figure = barchart.update(x_bar, y_bar, final_df)
         
         # Histogram update
         histogram_figure = time_hist.update(year_range)
