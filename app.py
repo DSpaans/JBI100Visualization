@@ -128,6 +128,17 @@ if __name__ == '__main__':
                               x_heat, y_heat, x_bar, y_bar, map_selected_data):
         # Extract year range
         low, high = year_range
+        
+        # df to keep track of non selected datapoints in the map
+        partial_for_map = df[df["Incident.year"].between(low, high)].copy()
+
+        if selected_state != "All states":
+            partial_for_map = partial_for_map[partial_for_map["State"] == selected_state]
+
+        if selected_shark != "All sharks":
+            partial_for_map = partial_for_map[partial_for_map["Shark.common.name"] == selected_shark]
+        
+        # df for the states dropdown
         partial_states = df[df["Incident.year"].between(low, high)]
 
         if map_selected_data and "points" in map_selected_data and len(map_selected_data["points"]) > 0:
@@ -137,7 +148,8 @@ if __name__ == '__main__':
         # If the user has picked a specific Shark, limit partial_states to that shark
         if selected_shark != "All sharks":
             partial_states = partial_states[partial_states["Shark.common.name"] == selected_shark]
-            
+        
+        # df for the sharks dropdown    
         partial_sharks = df[df["Incident.year"].between(low, high)]
 
         if map_selected_data and "points" in map_selected_data and len(map_selected_data["points"]) > 0:
@@ -147,18 +159,18 @@ if __name__ == '__main__':
         # If the user has picked a specific State, limit partial_sharks to that state
         if selected_state != "All states":
             partial_sharks = partial_sharks[partial_sharks["State"] == selected_state]
-        #--------
         
+        # States dropdown options update
         if partial_states.empty:
             states_options = [{"label": "All states (0)", "value": "All states"}]
         else:
-            # Count how many rows exist for each state
+            # Count instances
             states_counts = (
                 partial_states.dropna(subset=["State"])
                 .groupby("State")["State"].count()
                 .sort_values(ascending=True)
             )
-            # Start with 'All states (XYZ)'
+            # Start with all states
             states_options = [
                 {
                     "label": f"All states ({len(partial_states)})",
@@ -168,10 +180,11 @@ if __name__ == '__main__':
             for st, count in states_counts.items():
                 states_options.append({"label": f"{st} ({count})", "value": st})
                 
+            # Sharks dropdown options update
             if partial_sharks.empty:
                 sharks_options = [{"label": "All sharks (0)", "value": "All sharks"}]
             else:
-                # Count how many rows exist for each shark
+                # Count Instances
                 sharks_counts = (
                     partial_sharks.dropna(subset=["Shark.common.name"])
                     .groupby("Shark.common.name")["Shark.common.name"].count()
@@ -185,7 +198,8 @@ if __name__ == '__main__':
                 ]
                 for sh, count in sharks_counts.items():
                     sharks_options.append({"label": f"{sh} ({count})", "value": sh})
-                    
+        
+        # Final filtered df to be used in the visualizations            
         final_df = df[df["Incident.year"].between(low, high)]
         
         # Check if points are selected on the map (Brushing or click)
@@ -200,7 +214,7 @@ if __name__ == '__main__':
             final_df = final_df[final_df["Shark.common.name"] == selected_shark]
         
         # Update the map
-        map_figure = scatter_map_aus.update(final_df, map_selected_data)
+        map_figure = scatter_map_aus.update(partial_for_map, map_selected_data)
 
         
         # Radar plot: if user brushed points, we might have multiple sharks selected
@@ -251,19 +265,3 @@ if __name__ == '__main__':
         return map_figure, heatmap_figure, barchart_figure, radar_figure, histogram_figure, states_options, sharks_options
     
     app.run_server(debug=True, dev_tools_ui=False)
-    
-"""    @app.callback(
-        Output(scatterplot1.html_id, "figure"), [
-        Input("select-color-scatter-1", "value"),
-        Input(scatterplot2.html_id, 'selectedData')
-    ])
-    def update_scatter_1(selected_color, selected_data):
-        return scatterplot1.update(selected_color, selected_data)
-
-    @app.callback(
-        Output(scatterplot2.html_id, "figure"), [
-        Input("select-color-scatter-2", "value"),
-        Input(scatterplot1.html_id, 'selectedData')
-    ])
-    def update_scatter_2(selected_color, selected_data):
-        return scatterplot2.update(selected_color, selected_data)"""

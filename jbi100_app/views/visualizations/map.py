@@ -110,7 +110,7 @@ class ScatterGeo(html.Div):
         fig.update_traces(
             selectedpoints=selected_index,
             selected=dict(marker=dict(color='blue', size=8)),
-            unselected=dict(marker=dict(color="rgb(200,200,200)", size=8))
+            unselected=dict(marker=dict(color="rgb(150,150,150)", size=8))
         )
         
         return fig
