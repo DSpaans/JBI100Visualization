@@ -22,19 +22,18 @@ class BarChart(html.Div):
         if filtered_df is None:
             filtered_df = self.df
 
-        # Define fixed colors for injury categories
+        #fixed colors for injury categories
         injury_colors = {
             'fatal': 'red',
             'injured': 'orange',
             'uninjured': 'green'
         }
 
-        # If selected_y is 'Victim.injury', specify victim injury
         if selected_y == 'Victim.injury':
             valid_injury_categories = ['fatal', 'injured', 'uninjured']
             filtered_df = filtered_df[filtered_df['Victim.injury'].isin(valid_injury_categories)]
 
-            # Aggregate the data for the selected_x and the victim.injury categories
+            #get data for the selected_x and victim.injury categories
             agg_data = (
                 filtered_df
                 .groupby([selected_x, 'Victim.injury'])
@@ -42,24 +41,33 @@ class BarChart(html.Div):
                 .reset_index(name='Count')
             )
 
-            y_label = "Injury Status"
-            x_values = agg_data[selected_x].values
-            y_values = agg_data['Count'].values
-
-            # Map injury categories to predefined colors
-            bar_colors = [injury_colors[injury] for injury in agg_data['Victim.injury']]
+            #stacked bar chart
+            fig = px.bar(
+                agg_data,
+                x=selected_x,
+                y='Count',
+                color='Victim.injury',
+                color_discrete_map=injury_colors,
+                title=f"Stacked Bar Chart of {selected_x} by Injury Status",
+                labels={'Count': 'Number of Incidents', selected_x: selected_x}
+            )
 
         else:
-            # General case for other numeric or categorical columns
+            #general case for other numeric or categorical columns
             if pd.api.types.is_numeric_dtype(filtered_df[selected_y]):
                 agg_data = (
                     filtered_df
                     .groupby(selected_x)[selected_y]
-                    .sum()  # or .mean(), .count(), etc.
+                    .sum()  
                     .reset_index()
                 )
-                y_label = f"Sum of {selected_y}"
-                y_values = agg_data[selected_y].values
+                fig = px.bar(
+                    agg_data,
+                    x=selected_x,
+                    y=selected_y,
+                    title=f"Bar Chart of {selected_y} by {selected_x}",
+                    labels={selected_y: f"Sum of {selected_y}", selected_x: selected_x}
+                )
             else:
                 agg_data = (
                     filtered_df
@@ -67,30 +75,22 @@ class BarChart(html.Div):
                     .size()
                     .reset_index(name='Count')
                 )
-                y_label = f"Count of {selected_y}"
-                y_values = agg_data['Count'].values
+                fig = px.bar(
+                    agg_data,
+                    x=selected_x,
+                    y='Count',
+                    color=selected_y,
+                    title=f"Stacked Bar Chart of {selected_x} by {selected_y}",
+                    labels={'Count': 'Number of Incidents', selected_y: selected_y, selected_x: selected_x}
+                )
 
-            # For other types, use default color palette
-            x_values = agg_data[selected_x].values
-            palette_alphabet = px.colors.qualitative.Alphabet  # 26 distinct colors
-            color_cycle = itertools.cycle(palette_alphabet)
-            bar_colors = [next(color_cycle) for _ in range(len(x_values))]
-
-        # Create the Bar chart
-        fig = go.Figure(
-            data=go.Bar(
-                x=x_values,
-                y=y_values,
-                marker_color=bar_colors  # Apply color to bars, not y-axis labels
-            )
-        )
-
-        # Update layout with custom y_label and x/y titles
+        #update layout for consistency
         fig.update_layout(
-            xaxis_title=selected_x,
-            yaxis_title=y_label,
             margin=dict(l=60, r=20, t=40, b=40),
-            template="plotly_white"
+            template="plotly_white",
+            legend_title=dict(text="Categories"),
+            xaxis_title=selected_x,
+            yaxis_title="Count" if selected_y != 'Victim.injury' else "Number of Incidents"
         )
 
         return fig
