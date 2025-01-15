@@ -64,20 +64,19 @@ class RadarPlot(html.Div):
         )
 
         # (5) Average depth (normalized 0-100)
-        depth_series = pd.to_numeric(df_shark["Depth.of.incident.m"], errors="coerce")
-        avg_depth = depth_series.mean(skipna=True) or 0
-        avg_depth_norm = self.normalize_to_100(
-            avg_depth, 
-            self.global_min_depth, 
-            self.global_max_depth
-        )
+        age_series = pd.to_numeric(df_shark["Victim.age"], errors="coerce").dropna()
+        if len(age_series) == 0:
+            pct_under_18 = 0.0
+        else:
+            cond_under_18 = age_series < 18
+            pct_under_18 = 100.0 * cond_under_18.sum() / len(age_series)
 
         return (
             pct_injured_or_fatal,
             pct_fatal,
             pct_provoked,
             avg_length_norm,
-            avg_depth_norm
+            pct_under_18
         )
 
     def update(self, selected_shark_type, filtered_df=None):
@@ -92,7 +91,7 @@ class RadarPlot(html.Div):
          pct_fatal,
          pct_provoked,
          avg_length_norm,
-         avg_depth_norm) = self.compute_metrics(df_shark)
+         pct_under_18) = self.compute_metrics(df_shark)
 
         # Prepare the data for radar
         metrics = [
@@ -100,14 +99,14 @@ class RadarPlot(html.Div):
             pct_fatal,
             pct_provoked,
             avg_length_norm,
-            avg_depth_norm
+            pct_under_18
         ]
         axis_labels = [
             "% Injured or Fatal",
             "% Fatal",
             "% Provoked",
             "Avg Length (Norm)",
-            "Avg Depth (Norm)"
+            "% Victim Below 18"
         ]
 
         #Single scatterpolar trace
@@ -152,7 +151,7 @@ class RadarPlot(html.Div):
             "% Fatal",
             "% Provoked",
             "Avg Length (Norm)",
-            "Avg Depth (Norm)"
+            "% Victim Below 18"
         ]
         fig = go.Figure()
         all_values = []
@@ -166,7 +165,7 @@ class RadarPlot(html.Div):
              pct_fatal,
              pct_provoked,
              avg_length_norm,
-             avg_depth_norm) = self.compute_metrics(df_shark)
+             pct_under_18) = self.compute_metrics(df_shark)
 
             # Collect them into a list for this shark
             metrics = [
@@ -174,7 +173,7 @@ class RadarPlot(html.Div):
                 pct_fatal,
                 pct_provoked,
                 avg_length_norm,
-                avg_depth_norm
+                pct_under_18
             ]
             # Extend all_values so we can find the global max
             all_values.extend(metrics)

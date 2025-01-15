@@ -144,7 +144,7 @@ if __name__ == '__main__':
                 "% Fatal",
                 "% Provoked",
                 "Avg Length (Norm)",
-                "Avg Depth (Norm)"
+                "% Victim Below 18"
             ]
             # 5 axis to appear
             radar_figure.add_trace(
