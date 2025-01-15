@@ -10,13 +10,13 @@ class ScatterGeo(html.Div):
         # Equivalent to `html.Div([...])`
         super().__init__(
             className="graph_card",
-            style={"justifyContent": "center", "height": "100%"},
+            style={"justifyContent": "center", "height": "92.5%"},
             children=[
                 html.H6(name),
                 dcc.Graph(
                     id=self.html_id,
                     figure=self.update(),  # initial figure (unfiltered)
-                    style={'height': '45vh', 'width': '100%'},
+                    style={'height': '0vh', 'width': '100%'},
                     config={'displayModeBar': True, 'scrollZoom': True}
                 )
             ],
@@ -87,12 +87,13 @@ class ScatterGeo(html.Div):
             title = '',
             geo=dict(
                 scope='world', 
-                center=dict(lat=-25, lon=155), # roughly central Australia
-                projection_scale=2.5,         # controls zoom level
+                center=dict(lat=-25, lon=140), # roughly central Australia
+                projection_scale=3,         # controls zoom level
                 showland=True,
                 landcolor='rgb(217, 217, 217)',
                 ),
                 margin=dict(l=10, r=10, t=40, b=10),
+                clickmode='event + select',
                 dragmode='select', #Brushing / Enable selection
         )
 

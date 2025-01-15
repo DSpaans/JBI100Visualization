@@ -52,14 +52,29 @@ if __name__ == '__main__':
                 id="middle-column",
                 className="nine columns",
                 children=[
-                    #Map Visualization
-                    scatter_map_aus,
+                    html.Div(
+                        style={"display": "flex"},
+                        children=[
+                            html.Div(
+                                scatter_map_aus,
+                                style={
+                                    "width": "50%",
+                                    "padding": "0px",
+                                }
+                            ),
+                            html.Div(
+                                radar_plot,
+                                style={
+                                    "width": "50%",
+                                    "padding": "0px",
+                                }
+                            ),
+                        ],
+                    ),
                     #Heatmap
                     heatmap,
                     #Barchart
                     barchart,
-                    #Radar Plot
-                    radar_plot
                 ],
                 style={
                     "width": "75%",
@@ -122,9 +137,34 @@ if __name__ == '__main__':
             radar_figure = radar_plot.update_multiple(list(selected_shark_types), filtered_df)
         else:
             radar_figure = go.Figure()
+            axis_labels = [
+                "% Injured or Fatal",
+                "% Fatal",
+                "% Provoked",
+                "Avg Length (Norm)",
+                "Avg Depth (Norm)"
+            ]
+            # 5 axis to appear
+            radar_figure.add_trace(
+                go.Scatterpolar(
+                    r=[0, 0, 0, 0, 0],
+                    theta=axis_labels,
+                    fill='toself',
+                    name="No Data",
+                    hoverinfo='none'
+                )
+            )
+    
+            # Default range 0-100
             radar_figure.update_layout(
+                polar=dict(
+                    radialaxis=dict(
+                        visible=True,
+                        range=[0, 100]
+                    )
+                ),
+                showlegend=False,
                 template="plotly_white",
-                title_text="No Shark Selected"
             )
 
         # Heatmap update

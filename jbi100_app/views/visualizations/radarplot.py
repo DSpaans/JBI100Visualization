@@ -110,9 +110,6 @@ class RadarPlot(html.Div):
             "Avg Depth (Norm)"
         ]
 
-        #Single scatterpolar trace
-        fig = go.Figure()
-
         fig.add_trace(
             go.Scatterpolar(
                 r=metrics,
@@ -191,7 +188,7 @@ class RadarPlot(html.Div):
 
         # Determine global radial range from all traces
         max_val = max(all_values) if all_values else 0
-        radial_range = [0, max_val * 1.2] if max_val > 0 else [0, 1]
+        radial_range = [0, max_val * 1] if max_val > 0 else [0, 1]
 
         fig.update_layout(
             polar=dict(
