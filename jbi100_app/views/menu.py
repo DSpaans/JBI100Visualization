@@ -86,8 +86,10 @@ def generate_control_card(df, column_options_heatmap, column_options_barchart, r
                 html.Label("Select state", style={"fontWeight": "bold", "fontSize": "16px", "color": TEXT_COLOR}),
                 dcc.Dropdown(
                     id="select-state",
-                    options=[{"label": state, "value": state} for state in states],
+                    #options=[{"label": state, "value": state} for state in states],
+                    options=[],
                     value="All states",
+                    clearable=False,
                 ),
             ], style={"marginBottom": "5px"}),
 
@@ -95,8 +97,10 @@ def generate_control_card(df, column_options_heatmap, column_options_barchart, r
                 html.Label("Select shark", style={"fontWeight": "bold", "fontSize": "16px", "color": TEXT_COLOR}),
                 dcc.Dropdown(
                     id="select-shark",
-                    options=[{"label": shark, "value": shark} for shark in sharks],
+                    #options=[{"label": shark, "value": shark} for shark in sharks],
+                    options=[],
                     value="All sharks",
+                    clearable=False,
                 ),
             ], style={"marginBottom": "20px"}),
 
