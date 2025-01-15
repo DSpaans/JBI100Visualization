@@ -159,6 +159,9 @@ class RadarPlot(html.Div):
 
         for st in shark_types:
             df_shark = filtered_df[filtered_df["Shark.common.name"] == st]
+            if df_shark.empty:
+                continue
+            
             (pct_injured_or_fatal,
              pct_fatal,
              pct_provoked,
@@ -204,5 +207,3 @@ class RadarPlot(html.Div):
         )
 
         return fig
-
-
