@@ -110,6 +110,9 @@ class RadarPlot(html.Div):
             "Avg Depth (Norm)"
         ]
 
+        #Single scatterpolar trace
+        fig = go.Figure()
+
         fig.add_trace(
             go.Scatterpolar(
                 r=metrics,
@@ -120,7 +123,7 @@ class RadarPlot(html.Div):
             )
         )
 
-        # Pick a radial axis from 0 to 120% of the max (so its sufficiently large)
+        # Pick a radial axis from 0 to 100% of the max (so its sufficiently large)
         max_val = max(metrics) if metrics else 0
         radial_range = [0, max_val * 1] if max_val > 0 else [0, 1]
 
@@ -158,7 +161,7 @@ class RadarPlot(html.Div):
             df_shark = filtered_df[filtered_df["Shark.common.name"] == st]
             if df_shark.empty:
                 continue
-            
+
             (pct_injured_or_fatal,
              pct_fatal,
              pct_provoked,
