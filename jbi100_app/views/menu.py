@@ -62,9 +62,14 @@ def clean_column_name(name):
 
 def generate_control_card(df, column_options_heatmap, column_options_barchart, range_hist):
     # A Div containing controls for graphs.
+
     states = df["State"].dropna().unique().tolist()
     states.append("All states")
     states = sorted(states)
+
+    sharks = df["Shark.common.name"].dropna().unique().tolist()
+    sharks.append("All sharks")
+    sharks = sorted(sharks)
 
     return html.Div(
         id="control-card",
@@ -83,6 +88,15 @@ def generate_control_card(df, column_options_heatmap, column_options_barchart, r
                     id="select-state",
                     options=[{"label": state, "value": state} for state in states],
                     value="All states",
+                ),
+            ], style={"marginBottom": "5px"}),
+
+            html.Div([
+                html.Label("Select shark", style={"fontWeight": "bold", "fontSize": "16px", "color": TEXT_COLOR}),
+                dcc.Dropdown(
+                    id="select-shark",
+                    options=[{"label": shark, "value": shark} for shark in sharks],
+                    value="All sharks",
                 ),
             ], style={"marginBottom": "20px"}),
 

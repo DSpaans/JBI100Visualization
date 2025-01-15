@@ -114,6 +114,7 @@ if __name__ == '__main__':
          Output(time_hist.html_id, "figure")],
         [Input("year-slider", "value"), 
          Input("select-state", "value"), 
+         Input("select-shark", "value"), 
          Input("select-x-heatmap", "value"), 
          Input("select-y-heatmap", "value"),
          Input("select-x-bar", "value"), 
@@ -121,12 +122,16 @@ if __name__ == '__main__':
          Input(scatter_map_aus.html_id, "selectedData")],
     )
     
-    def update_visualizations(year_range, selected_state, x_heat, y_heat, x_bar, y_bar, map_selected_data):
+    def update_visualizations(year_range, selected_state, selected_shark, 
+                              x_heat, y_heat, x_bar, y_bar, map_selected_data):
         # Extract year range
         low, high = year_range
         filtered_df = df[df["Incident.year"].between(low, high)]
+        
+        # Filter based on dropdowns
         filtered_df = filtered_df[filtered_df["State"] == selected_state] if selected_state != "All states" else filtered_df
-
+        filtered_df = filtered_df[filtered_df["Shark.common.name"] == selected_shark] if selected_shark != "All sharks" else filtered_df
+        
         # Update the map
         map_figure = scatter_map_aus.update(filtered_df, map_selected_data)
 
@@ -175,7 +180,7 @@ if __name__ == '__main__':
         # Barchart update
         barchart_figure = barchart.update(x_bar, y_bar, filtered_df)
         
-        # Histogram updatez
+        # Histogram update
         histogram_figure = time_hist.update(year_range)
 
         return map_figure, heatmap_figure, barchart_figure, radar_figure, histogram_figure
