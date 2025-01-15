@@ -73,7 +73,7 @@ def generate_control_card(df, column_options_heatmap, column_options_barchart, r
                 html.Label("Select time range", style={"fontWeight": "bold", "fontSize": "16px", "color": TEXT_COLOR}),
                 range_hist,
                 make_time_slider(df)
-            ], style={"marginBottom": "10px"}),
+            ], style={"marginBottom": "20px"}),
 
             html.Hr(style={"borderTop": "1px solid #ccc", "margin": "10px 0"}),
 
@@ -84,7 +84,7 @@ def generate_control_card(df, column_options_heatmap, column_options_barchart, r
                     options=[{"label": state, "value": state} for state in states],
                     value="All states",
                 ),
-            ], style={"marginBottom": "5px"}),
+            ], style={"marginBottom": "20px"}),
 
             html.Hr(style={"borderTop": "1px solid #ccc", "margin": "10px 0"}),
 
