@@ -63,14 +63,6 @@ def clean_column_name(name):
 def generate_control_card(df, column_options_heatmap, column_options_barchart, range_hist):
     # A Div containing controls for graphs.
 
-    states = df["State"].dropna().unique().tolist()
-    states.append("All states")
-    states = sorted(states)
-
-    sharks = df["Shark.common.name"].dropna().unique().tolist()
-    sharks.append("All sharks")
-    sharks = sorted(sharks)
-
     return html.Div(
         id="control-card",
         children=[

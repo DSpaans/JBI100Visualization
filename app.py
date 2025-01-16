@@ -89,23 +89,7 @@ if __name__ == '__main__':
         ],
     )
 
-    # Define interactions   
-    
-    # def update_heatmap(year_range):
-    #     low, high = year_range
-    #     filtered_df = df[df["Incident.year"].between(low, high)]
-    #     return heatmap.update(filtered_df)
-    
-    # @app.callback(
-    #     Output(scatter_map_aus.html_id, "figure"),
-    #     Input("select-hover-column", "value"),
-    # )
-    
-    # def update_map(year_range, selected_column):
-    #     low, high = year_range
-    #     filtered_df = df[df["Incident.year"].between(low, high)]
-    #     return scatter_map_aus.update(filtered_df, selected_column)
-    
+    # Define interactions      
     @app.callback(
         [Output(scatter_map_aus.html_id, "figure"),
          Output(heatmap.html_id, "figure"),
@@ -137,18 +121,22 @@ if __name__ == '__main__':
         partial_sharks = df[df["Incident.year"].between(low, high)]
         # df for the histogram   
         final_histo = df.copy()
+        # Final filtered df to be used in the visualizations            
+        final_df = df[df["Incident.year"].between(low, high)]
 
         # If the user has picked a specific State, limit partial_sharks to that state
         if selected_state != "All states":
             partial_for_map = partial_for_map[partial_for_map["State"] == selected_state]
             partial_sharks = partial_sharks[partial_sharks["State"] == selected_state]
             final_histo = final_histo[final_histo["State"] == selected_state]
-
+            final_df = final_df[final_df["State"] == selected_state]
+            
         # If the user has picked a specific Shark, limit partial_states to that shark
         if selected_shark != "All sharks":
             partial_for_map = partial_for_map[partial_for_map["Shark.common.name"] == selected_shark]
             partial_states = partial_states[partial_states["Shark.common.name"] == selected_shark]
             final_histo = final_histo[final_histo["Shark.common.name"] == selected_shark]
+            final_df = final_df[final_df["Shark.common.name"] == selected_shark]
 
         # Histogram update
         histogram_figure = time_hist.update(final_histo, year_range)
@@ -157,63 +145,52 @@ if __name__ == '__main__':
             selected_uins = [pt["customdata"][0] for pt in map_selected_data["points"]]
             partial_states = partial_states[partial_states["UIN"].isin(selected_uins)]
             partial_sharks = partial_sharks[partial_sharks["UIN"].isin(selected_uins)]
+            final_df = final_df[final_df["UIN"].isin(selected_uins)]
         
         # States dropdown options update
-        if partial_states.empty:
-            states_options = [{"label": "All states (0)", "value": "All states"}]
-        else:
-            # Count instances
-            states_counts = (
-                partial_states.dropna(subset=["State"])
-                .groupby("State")["State"].count()
-                .sort_values(ascending=False)
-            )
-            states_options = [
-                {
-                    "label": f"All states ({len(partial_states)})",
-                    "value": "All states",
-                }
-            ]
-            for st, count in states_counts.items():
-                states_options.append({"label": f"{st} ({count})", "value": st})
+        state_options = options(partial_states, "State", "states")
                 
         # Sharks dropdown options update
-        if partial_sharks.empty:
-            sharks_options = [{"label": "All sharks (0)", "value": "All sharks"}]
-        else:
-            # Count instances
-            sharks_counts = (
-                partial_sharks.dropna(subset=["Shark.common.name"])
-                .groupby("Shark.common.name")["Shark.common.name"].count()
-                .sort_values(ascending=False)
-            )
-            sharks_options = [
-                {
-                    "label": f"All sharks ({len(partial_sharks)})",
-                    "value": "All sharks",
-                }
-            ]
-            for sh, count in sharks_counts.items():
-                sharks_options.append({"label": f"{sh} ({count})", "value": sh})
-        
-        # Final filtered df to be used in the visualizations            
-        final_df = df[df["Incident.year"].between(low, high)]
-        
-        # Check if points are selected on the map (Brushing or click)
-        if map_selected_data and "points" in map_selected_data and len(map_selected_data["points"]) > 0:
-            selected_uins = [pt["customdata"][0] for pt in map_selected_data["points"]]
-            final_df = final_df[final_df["UIN"].isin(selected_uins)]  # Filter based on selected points
-            
-        if selected_state != "All states":
-            final_df = final_df[final_df["State"] == selected_state]
-
-        if selected_shark != "All sharks":
-            final_df = final_df[final_df["Shark.common.name"] == selected_shark]
+        shark_options = options(partial_sharks, "Shark.common.name", "sharks")
         
         # Update the map
         map_figure = scatter_map_aus.update(partial_for_map, map_selected_data)
-
         
+        # Radar plot: if user brushed points, we might have multiple sharks selected
+        radar_figure = plot_radar(map_selected_data, final_df)
+
+        # Heatmap update
+        heatmap_figure = heatmap.update(x_heat, y_heat, final_df)
+        
+        # Barchart update
+        barchart_figure = barchart.update(x_bar, y_bar, final_df)
+
+        return map_figure, heatmap_figure, barchart_figure, radar_figure, histogram_figure, state_options, shark_options
+    
+    
+    def options(partial, selected, lselecteds):
+        # States dropdown options update
+        if partial.empty:
+            options = [{"label": f"All {lselecteds} (0)", "value": f"All {lselecteds}"}]
+        else:
+            options = [
+                {
+                    "label": f"All {lselecteds} ({len(partial)})",
+                    "value": f"All {lselecteds}",
+                }
+            ]
+            # Count instances
+            counts = (
+                partial.dropna(subset=[selected])
+                .groupby(selected)[selected].count()
+                .sort_values(ascending=False)
+            )
+            for item, count in counts.items():
+                options.append({"label": f"{item} ({count})", "value": item})
+        return options
+    
+    
+    def plot_radar(map_selected_data, final_df):
         # Radar plot: if user brushed points, we might have multiple sharks selected
         if map_selected_data and "points" in map_selected_data and len(map_selected_data["points"]) > 0:
             selected_shark_types = {pt["customdata"][1] for pt in map_selected_data["points"]}
@@ -249,13 +226,7 @@ if __name__ == '__main__':
                 showlegend=False,
                 template="plotly_white",
             )
+        return radar_figure
 
-        # Heatmap update
-        heatmap_figure = heatmap.update(x_heat, y_heat, final_df)
-        
-        # Barchart update
-        barchart_figure = barchart.update(x_bar, y_bar, final_df)
-
-        return map_figure, heatmap_figure, barchart_figure, radar_figure, histogram_figure, states_options, sharks_options
     
     app.run_server(debug=True, dev_tools_ui=False)

@@ -42,7 +42,6 @@ class Heatmap(html.Div):
         self.fig.update_layout(
             xaxis_title=selected_x,
             yaxis_title=selected_y,
-            # yaxis_showticklabels=False,  # Hide y-axis labels to make it 1D
             margin=dict(l=60, r=20, t=40, b=40)
         )
 

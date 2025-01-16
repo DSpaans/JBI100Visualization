@@ -65,23 +65,6 @@ class ScatterGeo(html.Div):
                 )
             ]
         )
-        
-        # fig.add_trace(
-        #     go.Scattergeo(
-        #         lon=AU_CITIES['Longitude'],
-        #         lat=AU_CITIES['Latitude'],
-        #         text=AU_CITIES['City'],
-        #         mode='markers',
-        #         showlegend=False,
-        #         hovertemplate="%{text}<extra></extra>",
-        #         textposition='top center',
-        #         marker=dict(
-        #             color='black',
-        #             opacity=1,
-        #             size=5,
-        #         ),
-        #     )
-        # )
 
         fig.update_layout(
             title = '',
