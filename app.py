@@ -169,7 +169,7 @@ if __name__ == '__main__':
             states_counts = (
                 partial_states.dropna(subset=["State"])
                 .groupby("State")["State"].count()
-                .sort_values(ascending=True)
+                .sort_values(ascending=False)
             )
             states_options = [
                 {
@@ -188,7 +188,7 @@ if __name__ == '__main__':
             sharks_counts = (
                 partial_sharks.dropna(subset=["Shark.common.name"])
                 .groupby("Shark.common.name")["Shark.common.name"].count()
-                .sort_values(ascending=True)
+                .sort_values(ascending=False)
             )
             sharks_options = [
                 {
@@ -260,7 +260,7 @@ if __name__ == '__main__':
         barchart_figure = barchart.update(x_bar, y_bar, final_df)
         
         # Histogram update
-        histogram_figure = time_hist.update(year_range)
+        histogram_figure = time_hist.update(final_df, year_range)
 
         return map_figure, heatmap_figure, barchart_figure, radar_figure, histogram_figure, states_options, sharks_options
     

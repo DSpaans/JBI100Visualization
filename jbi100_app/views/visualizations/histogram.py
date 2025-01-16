@@ -13,22 +13,25 @@ class Histogram(html.Div):
                 html.H6(name),
                 dcc.Graph(
                     id=self.html_id,
-                    config={"displayModeBar": False,
-                    "staticPlot": True},
+                    config={
+                        "displayModeBar": False,
+                        "staticPlot": True
+                        },
                     style={"height": "180px"},
                     )
             ],
         )
 
-    def update(self, selected_range):
+    def update(self, filtered_df, selected_range):
         df = self.df["Incident.year"].dropna()
+        df_years = filtered_df["Incident.year"].dropna()
         
         fig = go.Figure(
             data=[
                 go.Histogram(
-                    x=df,
+                    x=df_years,
                     marker_color="blue",
-                    nbinsx=int(df.max() - df.min()) + 1,
+                    nbinsx=int(df_years.max() - df_years.min()) + 1,
                 )
             ]
         )
@@ -53,14 +56,8 @@ class Histogram(html.Div):
         fig.update_layout(
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
-            xaxis=dict(
-                showgrid=False,
-                zeroline=False
-                ),
-            yaxis=dict(
-                showgrid=False,
-                zeroline=False
-            ),
+            xaxis=dict(showgrid=False, zeroline=False),
+            yaxis=dict(showgrid=False, zeroline=False),
             margin = dict(t=10, l=5, r=5, b=0),
             
         )
