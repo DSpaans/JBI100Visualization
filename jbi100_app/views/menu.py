@@ -87,7 +87,7 @@ def generate_control_card(df, column_options_heatmap, column_options_barchart, r
                 dcc.Dropdown(
                     id="select-state",
                     #options=[{"label": state, "value": state} for state in states],
-                    options=[],
+                    options=["All states"],
                     value="All states",
                     clearable=False,
                 ),
@@ -98,7 +98,7 @@ def generate_control_card(df, column_options_heatmap, column_options_barchart, r
                 dcc.Dropdown(
                     id="select-shark",
                     #options=[{"label": shark, "value": shark} for shark in sharks],
-                    options=[],
+                    options=["All sharks"],
                     value="All sharks",
                     clearable=False,
                 ),

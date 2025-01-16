@@ -161,6 +161,7 @@ if __name__ == '__main__':
             partial_sharks = partial_sharks[partial_sharks["State"] == selected_state]
         
         # States dropdown options update
+        
         if partial_states.empty:
             states_options = [{"label": "All states (0)", "value": "All states"}]
         else:
@@ -170,7 +171,6 @@ if __name__ == '__main__':
                 .groupby("State")["State"].count()
                 .sort_values(ascending=True)
             )
-            # Start with all states
             states_options = [
                 {
                     "label": f"All states ({len(partial_states)})",
@@ -180,24 +180,24 @@ if __name__ == '__main__':
             for st, count in states_counts.items():
                 states_options.append({"label": f"{st} ({count})", "value": st})
                 
-            # Sharks dropdown options update
-            if partial_sharks.empty:
-                sharks_options = [{"label": "All sharks (0)", "value": "All sharks"}]
-            else:
-                # Count Instances
-                sharks_counts = (
-                    partial_sharks.dropna(subset=["Shark.common.name"])
-                    .groupby("Shark.common.name")["Shark.common.name"].count()
-                    .sort_values(ascending=True)
-                )
-                sharks_options = [
-                    {
-                        "label": f"All sharks ({len(partial_sharks)})",
-                        "value": "All sharks",
-                    }
-                ]
-                for sh, count in sharks_counts.items():
-                    sharks_options.append({"label": f"{sh} ({count})", "value": sh})
+        # Sharks dropdown options update
+        if partial_sharks.empty:
+            sharks_options = [{"label": "All sharks (0)", "value": "All sharks"}]
+        else:
+            # Count instances
+            sharks_counts = (
+                partial_sharks.dropna(subset=["Shark.common.name"])
+                .groupby("Shark.common.name")["Shark.common.name"].count()
+                .sort_values(ascending=True)
+            )
+            sharks_options = [
+                {
+                    "label": f"All sharks ({len(partial_sharks)})",
+                    "value": "All sharks",
+                }
+            ]
+            for sh, count in sharks_counts.items():
+                sharks_options.append({"label": f"{sh} ({count})", "value": sh})
         
         # Final filtered df to be used in the visualizations            
         final_df = df[df["Incident.year"].between(low, high)]
