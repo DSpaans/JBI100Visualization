@@ -131,37 +131,34 @@ if __name__ == '__main__':
         
         # df to keep track of non selected datapoints in the map
         partial_for_map = df[df["Incident.year"].between(low, high)].copy()
-
-        if selected_state != "All states":
-            partial_for_map = partial_for_map[partial_for_map["State"] == selected_state]
-
-        if selected_shark != "All sharks":
-            partial_for_map = partial_for_map[partial_for_map["Shark.common.name"] == selected_shark]
-        
         # df for the states dropdown
         partial_states = df[df["Incident.year"].between(low, high)]
+        # df for the sharks dropdown    
+        partial_sharks = df[df["Incident.year"].between(low, high)]
+        # df for the histogram   
+        final_histo = df.copy()
+
+        # If the user has picked a specific State, limit partial_sharks to that state
+        if selected_state != "All states":
+            partial_for_map = partial_for_map[partial_for_map["State"] == selected_state]
+            partial_sharks = partial_sharks[partial_sharks["State"] == selected_state]
+            final_histo = final_histo[final_histo["State"] == selected_state]
+
+        # If the user has picked a specific Shark, limit partial_states to that shark
+        if selected_shark != "All sharks":
+            partial_for_map = partial_for_map[partial_for_map["Shark.common.name"] == selected_shark]
+            partial_states = partial_states[partial_states["Shark.common.name"] == selected_shark]
+            final_histo = final_histo[final_histo["Shark.common.name"] == selected_shark]
+
+        # Histogram update
+        histogram_figure = time_hist.update(final_histo, year_range)
 
         if map_selected_data and "points" in map_selected_data and len(map_selected_data["points"]) > 0:
             selected_uins = [pt["customdata"][0] for pt in map_selected_data["points"]]
             partial_states = partial_states[partial_states["UIN"].isin(selected_uins)]
-
-        # If the user has picked a specific Shark, limit partial_states to that shark
-        if selected_shark != "All sharks":
-            partial_states = partial_states[partial_states["Shark.common.name"] == selected_shark]
-        
-        # df for the sharks dropdown    
-        partial_sharks = df[df["Incident.year"].between(low, high)]
-
-        if map_selected_data and "points" in map_selected_data and len(map_selected_data["points"]) > 0:
-            selected_uins = [pt["customdata"][0] for pt in map_selected_data["points"]]
             partial_sharks = partial_sharks[partial_sharks["UIN"].isin(selected_uins)]
-
-        # If the user has picked a specific State, limit partial_sharks to that state
-        if selected_state != "All states":
-            partial_sharks = partial_sharks[partial_sharks["State"] == selected_state]
         
         # States dropdown options update
-        
         if partial_states.empty:
             states_options = [{"label": "All states (0)", "value": "All states"}]
         else:
@@ -258,9 +255,6 @@ if __name__ == '__main__':
         
         # Barchart update
         barchart_figure = barchart.update(x_bar, y_bar, final_df)
-        
-        # Histogram update
-        histogram_figure = time_hist.update(final_df, year_range)
 
         return map_figure, heatmap_figure, barchart_figure, radar_figure, histogram_figure, states_options, sharks_options
     
