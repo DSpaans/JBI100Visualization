@@ -48,7 +48,6 @@ class BarChart(html.Div):
                 y='Count',
                 color='Victim.injury',
                 color_discrete_map=injury_colors,
-                title=f"Stacked Bar Chart of {selected_x} by Injury Status",
                 labels={'Count': 'Number of Incidents', selected_x: selected_x}
             )
 
@@ -65,7 +64,6 @@ class BarChart(html.Div):
                     agg_data,
                     x=selected_x,
                     y=selected_y,
-                    title=f"Bar Chart of {selected_y} by {selected_x}",
                     labels={selected_y: f"Sum of {selected_y}", selected_x: selected_x}
                 )
             else:
@@ -80,7 +78,6 @@ class BarChart(html.Div):
                     x=selected_x,
                     y='Count',
                     color=selected_y,
-                    title=f"Stacked Bar Chart of {selected_x} by {selected_y}",
                     labels={'Count': 'Number of Incidents', selected_y: selected_y, selected_x: selected_x}
                 )
 
