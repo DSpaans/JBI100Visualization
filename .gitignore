@@ -209,3 +209,4 @@ Temporary Items
 pyvenv.cfg
 .venv
 pip-selfcheck.json
+~$ASI_Database.xlsx
