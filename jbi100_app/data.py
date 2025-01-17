@@ -2,6 +2,7 @@ import plotly.express as px
 import pandas as pd
 import numpy as np
 import re
+from jbi100_app.config import int_to_month
 #Note from Dembis: If ewe want to modify the data before it is used in the visualizations, 
 # it might be a good idea to do it beforehand and upload a 2nd file to the project if it takes a long time to process
 
@@ -17,6 +18,7 @@ def get_data():
 
 def treat_data(df):
     df['Injury.category'] = df['Injury.location'].apply(lambda loc: categorize_injury_location(loc))
+    df['Month'] = df['Incident.month'].apply(lambda loc: int_to_month(loc))
     df = make_lower_case(df, 'Site.category')
     df = make_lower_case(df, 'Victim.injury')
     df = jitter_coordinates(df)

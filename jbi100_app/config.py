@@ -3,39 +3,35 @@ import pandas as pd
 
 column_options_1 = ["None", "Incident.year", "Provoked/unprovoked"]
 column_options_heatmap = ["Shark.common.name", "Shark.scientific.name", "Injury.category", "Victim.injury", "State", "Site.category", 
-                          "Provoked/unprovoked", "Victim.activity", "Injury.severity"]
+                          "Provoked/unprovoked", "Victim.activity", "Injury.severity", "Month"]
 column_options_barchart = ["Shark.common.name", "Shark.scientific.name", "Injury.category", "Victim.injury", "State", "Site.category", 
-                          "Provoked/unprovoked", "Victim.activity", "Injury.severity", "Number_of_fatal_incidents"]
+                          "Provoked/unprovoked", "Victim.activity", "Injury.severity", "Number_of_fatal_incidents", "Month"]
 
-AU_CITIES = pd.DataFrame({
-    'City': [
-        'Sydney',
-        'Melbourne',
-        'Brisbane',
-        'Perth',
-        'Adelaide',
-        'Canberra',
-        'Hobart',
-        'Darwin'
-    ],
-    'Latitude': [
-        -33.8688,
-        -37.8136,
-        -27.4698,
-        -31.9505,
-        -34.9285,
-        -35.2809,
-        -42.8821,
-        -12.4634
-    ],
-    'Longitude': [
-        151.2093,
-        144.9631,
-        153.0251,
-        115.8605,
-        138.6007,
-        149.1300,
-        147.3272,
-        130.8456
-    ]
-})
+#Converts an integer to a month name
+def int_to_month(int):
+    if int == 1:
+        return "January"
+    elif int == 2:
+        return "February"
+    elif int == 3:
+        return "March"
+    elif int == 4:
+        return "April"
+    elif int == 5:
+        return "May"
+    elif int == 6:
+        return "June"
+    elif int == 7:
+        return "July"
+    elif int == 8:
+        return "August"
+    elif int == 9:
+        return "September"
+    elif int == 10:
+        return "October"
+    elif int == 11:
+        return "November"
+    elif int == 12:
+        return "December"
+    else:
+        return "Unknown"

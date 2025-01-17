@@ -1,6 +1,7 @@
 from jbi100_app.main import app
 from jbi100_app.data import get_data
-from jbi100_app.views.menu import make_menu_layout, make_time_slider
+from jbi100_app.config import int_to_month
+from jbi100_app.views.menu import make_menu_layout
 from jbi100_app.views.visualizations.map import ScatterGeo
 from jbi100_app.views.visualizations.heatmap import Heatmap
 from jbi100_app.views.visualizations.barchart import BarChart
@@ -96,9 +97,11 @@ if __name__ == '__main__':
          Output(barchart.html_id, "figure"),
          Output(radar_plot.html_id, "figure"),
          Output(time_hist.html_id, "figure"),
+         Output("select-month", "options"),
          Output("select-state", "options"),
          Output("select-shark", "options")],
         [Input("year-slider", "value"), 
+         Input("select-month", "value"),
          Input("select-state", "value"), 
          Input("select-shark", "value"), 
          Input("select-x-heatmap", "value"), 
@@ -108,13 +111,15 @@ if __name__ == '__main__':
          Input(scatter_map_aus.html_id, "selectedData")],
     )
     
-    def update_visualizations(year_range, selected_state, selected_shark, 
+    def update_visualizations(year_range, selected_month, selected_state, selected_shark, 
                               x_heat, y_heat, x_bar, y_bar, map_selected_data):
         # Extract year range
         low, high = year_range
         
         # df to keep track of non selected datapoints in the map
         partial_for_map = df[df["Incident.year"].between(low, high)].copy()
+        # df for the months dropdown
+        partial_months = df[df["Incident.year"].between(low, high)].copy()
         # df for the states dropdown
         partial_states = df[df["Incident.year"].between(low, high)].copy()
         # df for the sharks dropdown    
@@ -125,9 +130,18 @@ if __name__ == '__main__':
         final_df = df[df["Incident.year"].between(low, high)].copy()
 
         # If the user has picked a specific State, limit partial_sharks to that state
+        if selected_month != "All year":
+            partial_for_map = partial_for_map[partial_for_map["Incident.month"] == selected_month]
+            partial_sharks = partial_sharks[partial_sharks["Incident.month"] == selected_month]
+            partial_states = partial_states[partial_states["Incident.month"] == selected_month]
+            final_histo = final_histo[final_histo["Incident.month"] == selected_month]
+            final_df = final_df[final_df["Incident.month"] == selected_month]
+
+        # If the user has picked a specific State, limit partial_sharks to that state
         if selected_state != "All states":
             partial_for_map = partial_for_map[partial_for_map["State"] == selected_state]
             partial_sharks = partial_sharks[partial_sharks["State"] == selected_state]
+            partial_months = partial_months[partial_months["State"] == selected_state]
             final_histo = final_histo[final_histo["State"] == selected_state]
             final_df = final_df[final_df["State"] == selected_state]
             
@@ -135,6 +149,7 @@ if __name__ == '__main__':
         if selected_shark != "All sharks":
             partial_for_map = partial_for_map[partial_for_map["Shark.common.name"] == selected_shark]
             partial_states = partial_states[partial_states["Shark.common.name"] == selected_shark]
+            partial_months = partial_months[partial_months["Shark.common.name"] == selected_shark]
             final_histo = final_histo[final_histo["Shark.common.name"] == selected_shark]
             final_df = final_df[final_df["Shark.common.name"] == selected_shark]
 
@@ -147,6 +162,10 @@ if __name__ == '__main__':
             partial_sharks = partial_sharks[partial_sharks["UIN"].isin(selected_uins)]
             final_df = final_df[final_df["UIN"].isin(selected_uins)]
         
+        # Sharks dropdown options update
+        partial_months = partial_months.sort_values("Incident.month")
+        month_options = options(partial_months, "Incident.month", "year", True)
+
         # States dropdown options update
         state_options = options(partial_states, "State", "states")
                 
@@ -165,10 +184,10 @@ if __name__ == '__main__':
         # Barchart update
         barchart_figure = barchart.update(x_bar, y_bar, final_df)
 
-        return map_figure, heatmap_figure, barchart_figure, radar_figure, histogram_figure, state_options, shark_options
+        return map_figure, heatmap_figure, barchart_figure, radar_figure, histogram_figure, month_options, state_options, shark_options
     
     
-    def options(partial, selected, lselecteds):
+    def options(partial, selected, lselecteds, months=False):
         # States dropdown options update
         if partial.empty:
             options = [{"label": f"All {lselecteds} (0)", "value": f"All {lselecteds}"}]
@@ -180,13 +199,22 @@ if __name__ == '__main__':
                 }
             ]
             # Count instances
-            counts = (
-                partial.dropna(subset=[selected])
-                .groupby(selected)[selected].count()
-                .sort_values(ascending=False)
-            )
-            for item, count in counts.items():
-                options.append({"label": f"{item} ({count})", "value": item})
+            if not months:
+                counts = (
+                    partial.dropna(subset=[selected])
+                    .groupby(selected)[selected].count()
+                    .sort_values(ascending=False)
+                )
+                for item, count in counts.items():
+                    options.append({"label": f"{item} ({count})", "value": item})
+            else:
+                counts = (
+                    partial.dropna(subset=[selected])
+                    .groupby(selected)[selected].count()
+                )
+                for item, count in counts.items():
+                    options.append({"label": f"{int_to_month(item)} ({count})", "value": item})
+            
         return options
     
     

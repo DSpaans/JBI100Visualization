@@ -16,34 +16,16 @@ def generate_description_card():
     return html.Div(
         id="description-card",
         children=[
+            # sharkify logo
             html.Img(
-                src="/assets/sharkify.png",  # Replace with your image path or URL
+                src="/assets/sharkify.png",
                 style={
-                    "width": "100%",  # Set the desired width of the image
-                    "height": "auto",  # Maintain aspect ratio
-                    "display": "block",  # Center image horizontally
-                    "margin": "0 auto",  # Center image horizontally
+                    "width": "100%",
+                    "height": "auto",
+                    "display": "block",
+                    "margin": "0 auto",
                 }
             ),
-            # html.H5(
-            #     "Sharkify", 
-            #     style={
-            #         "color": ACCENT_COLOR, 
-            #         "textAlign": "center", 
-            #         "fontWeight": "bold", 
-            #         "fontSize": "36px"
-            #     }
-            # ),
-            # html.Div(
-            #     id="intro",
-            #     children="Your Guardian Eye on Shark Activity",
-            #     style={
-            #         "textAlign": "center", 
-            #         "color": ACCENT_COLOR, 
-            #         "fontSize": "20px", 
-            #         "marginTop": "0px"
-            #     }
-            # ),
         ],
         style={
             "backgroundColor": CARD_BACKGROUND_COLOR, 
@@ -66,6 +48,7 @@ def generate_control_card(df, column_options_heatmap, column_options_barchart, r
     return html.Div(
         id="control-card",
         children=[
+            # time slider
             html.Div([
                 html.Label("Select time range", style={"fontWeight": "bold", "fontSize": "16px", "color": TEXT_COLOR}),
                 range_hist,
@@ -74,22 +57,33 @@ def generate_control_card(df, column_options_heatmap, column_options_barchart, r
 
             html.Hr(style={"borderTop": "1px solid #ccc", "margin": "10px 0"}),
 
+            # month dropdown
+            html.Div([
+                html.Label("Select month", style={"fontWeight": "bold", "fontSize": "16px", "color": TEXT_COLOR}),
+                dcc.Dropdown(
+                    id="select-month",
+                    options=["All year"],
+                    value="All year",
+                    clearable=False,
+                ),
+            ], style={"marginBottom": "5px"}),
+
+            # state dropdown
             html.Div([
                 html.Label("Select state", style={"fontWeight": "bold", "fontSize": "16px", "color": TEXT_COLOR}),
                 dcc.Dropdown(
                     id="select-state",
-                    #options=[{"label": state, "value": state} for state in states],
                     options=["All states"],
                     value="All states",
                     clearable=False,
                 ),
             ], style={"marginBottom": "5px"}),
 
+            # shark dropdown
             html.Div([
                 html.Label("Select shark", style={"fontWeight": "bold", "fontSize": "16px", "color": TEXT_COLOR}),
                 dcc.Dropdown(
                     id="select-shark",
-                    #options=[{"label": shark, "value": shark} for shark in sharks],
                     options=["All sharks"],
                     value="All sharks",
                     clearable=False,
@@ -98,6 +92,7 @@ def generate_control_card(df, column_options_heatmap, column_options_barchart, r
 
             html.Hr(style={"borderTop": "1px solid #ccc", "margin": "10px 0"}),
 
+            # select x-axis heatmap
             html.Div([
                 html.Label("Select x-axis heatmap", style={"fontWeight": "bold", "fontSize": "16px", "color": TEXT_COLOR}),
                 dcc.Dropdown(
@@ -108,6 +103,7 @@ def generate_control_card(df, column_options_heatmap, column_options_barchart, r
                 ),
             ], style={"marginBottom": "5px"}),
 
+            # select y-axis heatmap
             html.Div([
                 html.Label("Select y-axis heatmap", style={"fontWeight": "bold", "fontSize": "16px", "color": TEXT_COLOR}),
                 dcc.Dropdown(
@@ -120,6 +116,7 @@ def generate_control_card(df, column_options_heatmap, column_options_barchart, r
 
             html.Hr(style={"borderTop": "1px solid #ccc", "margin": "10px 0"}),
 
+            # select x-axis barchart
             html.Div([
                 html.Label("Select x-axis barchart", style={"fontWeight": "bold", "fontSize": "16px", "color": TEXT_COLOR}),
                 dcc.Dropdown(
@@ -130,6 +127,7 @@ def generate_control_card(df, column_options_heatmap, column_options_barchart, r
                 ),
             ], style={"marginBottom": "5px"}),
 
+            # select y-axis barchart
             html.Div([
                 html.Label("Select y-axis barchart", style={"fontWeight": "bold", "fontSize": "16px", "color": TEXT_COLOR}),
                 dcc.Dropdown(
@@ -172,7 +170,6 @@ def make_time_slider(df):
     return html.Div(
         id="time-slider",
         children=[
-            #html.Label("Set time period", style={"fontWeight": "bold", "fontSize": "16px", "color": TEXT_COLOR}),
             dcc.RangeSlider(
                 id="year-slider",
                 min=min_year,

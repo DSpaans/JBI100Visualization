@@ -1,6 +1,5 @@
 from dash import dcc, html
 import plotly.graph_objects as go
-from jbi100_app.config import AU_CITIES
 
 class ScatterGeo(html.Div):
     def __init__(self, name, df):
@@ -69,7 +68,7 @@ class ScatterGeo(html.Div):
         fig.update_layout(
             title = '',
             geo=dict(
-                scope='world', 
+                scope='world',
                 center=dict(lat=-25, lon=140), # roughly central Australia
                 projection_scale=3,         # controls zoom level
                 showland=True,
