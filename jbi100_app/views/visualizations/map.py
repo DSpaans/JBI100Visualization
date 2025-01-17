@@ -41,7 +41,7 @@ class ScatterGeo(html.Div):
             "<br>" + 
             "Activity: " + filtered_df['Victim.activity'].fillna("Unknown") + 
             "<br>"+ 
-            "Injury: " + filtered_df['Injury.category'].fillna("Unknown") + 
+            "Severity: " + filtered_df['Victim.injury'].fillna("Unknown") + 
             "<br>"+ 
             filtered_df['Provoked/unprovoked'].fillna("Unknown")
         )
