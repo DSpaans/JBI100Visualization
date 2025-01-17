@@ -116,13 +116,13 @@ if __name__ == '__main__':
         # df to keep track of non selected datapoints in the map
         partial_for_map = df[df["Incident.year"].between(low, high)].copy()
         # df for the states dropdown
-        partial_states = df[df["Incident.year"].between(low, high)]
+        partial_states = df[df["Incident.year"].between(low, high)].copy()
         # df for the sharks dropdown    
-        partial_sharks = df[df["Incident.year"].between(low, high)]
+        partial_sharks = df[df["Incident.year"].between(low, high)].copy()
         # df for the histogram   
         final_histo = df.copy()
         # Final filtered df to be used in the visualizations            
-        final_df = df[df["Incident.year"].between(low, high)]
+        final_df = df[df["Incident.year"].between(low, high)].copy()
 
         # If the user has picked a specific State, limit partial_sharks to that state
         if selected_state != "All states":
@@ -143,6 +143,8 @@ if __name__ == '__main__':
 
         if map_selected_data and "points" in map_selected_data and len(map_selected_data["points"]) > 0:
             selected_uins = [pt["customdata"][0] for pt in map_selected_data["points"]]
+            partial_states = partial_states[partial_states["UIN"].isin(selected_uins)]
+            partial_sharks = partial_sharks[partial_sharks["UIN"].isin(selected_uins)]
             final_df = final_df[final_df["UIN"].isin(selected_uins)]
         
         # States dropdown options update
