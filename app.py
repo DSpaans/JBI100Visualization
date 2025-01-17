@@ -143,8 +143,8 @@ if __name__ == '__main__':
 
         if map_selected_data and "points" in map_selected_data and len(map_selected_data["points"]) > 0:
             selected_uins = [pt["customdata"][0] for pt in map_selected_data["points"]]
-            #partial_states = partial_states[partial_states["UIN"].isin(selected_uins)]
-            #partial_sharks = partial_sharks[partial_sharks["UIN"].isin(selected_uins)]
+            partial_states = partial_states[partial_states["UIN"].isin(selected_uins)]
+            partial_sharks = partial_sharks[partial_sharks["UIN"].isin(selected_uins)]
             final_df = final_df[final_df["UIN"].isin(selected_uins)]
         
         # States dropdown options update
