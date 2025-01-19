@@ -25,7 +25,7 @@ if __name__ == '__main__':
     scatter_map_aus = ScatterGeo("Incidents Map", df)
     heatmap = Heatmap("Heatmap", df)
     barchart = BarChart("Bar Chart", df)
-    radar_plot = RadarPlot("Shark Radar Plot", df, global_min_length, global_max_length, global_min_depth, global_max_depth)
+    radar_plot = RadarPlot("Shark Radar Plot", df, global_min_length, global_max_length)
     time_hist = Histogram(name=None, df=df, show_title=False)
 
     app.layout = html.Div(

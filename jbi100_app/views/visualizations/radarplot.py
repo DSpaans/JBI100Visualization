@@ -3,14 +3,12 @@ import plotly.graph_objects as go
 import pandas as pd
 
 class RadarPlot(html.Div):
-    def __init__(self, name, df, global_min_length, global_max_length, global_min_depth, global_max_depth):
+    def __init__(self, name, df, global_min_length, global_max_length):
         self.html_id = name.lower().replace(" ", "-")
         self.df = df
 
         self.global_min_length = global_min_length
         self.global_max_length = global_max_length
-        self.global_min_depth = global_min_depth
-        self.global_max_depth = global_max_depth
 
         super().__init__(
             className="graph_card",
@@ -21,7 +19,7 @@ class RadarPlot(html.Div):
         )
 
     def normalize_to_100(self, value, min_val, max_val):
-        #To convert value to a 0-100 scale
+        # To convert value to a 0-100 scale
         if pd.isna(value):
             return 0
         if max_val == min_val:
@@ -29,12 +27,12 @@ class RadarPlot(html.Div):
         return 100 * (value - min_val) / (max_val - min_val)
     
     def compute_metrics(self, df_shark):
-        #Given a DataFrame 'df_shark' for a single shark type, compute the 5 metrics:
+        # Given a DataFrame 'df_shark' for a single shark type, compute the 5 metrics:
         #  1) % Injured or Fatal
         #  2) % Fatal
         #  3) % Provoked
         #  4) Avg Length (normalized)
-        #  5) Avg Depth (normalized)
+        #  5) % Victim under 18
         if df_shark.empty:
             # If no rows, return all zeros
             return 0, 0, 0, 0, 0
@@ -63,7 +61,7 @@ class RadarPlot(html.Div):
             self.global_max_length
         )
 
-        # (5) Average depth (normalized 0-100)
+        # (5) % Victim under 18
         age_series = pd.to_numeric(df_shark["Victim.age"], errors="coerce").dropna()
         if len(age_series) == 0:
             pct_under_18 = 0.0
@@ -84,7 +82,7 @@ class RadarPlot(html.Div):
         if filtered_df is None:
             filtered_df = self.df
 
-        #Filter by chosen shark type
+        # Filter by chosen shark type
         df_shark = filtered_df[filtered_df["Shark.common.name"] == selected_shark_type]
 
         (pct_injured_or_fatal,
@@ -109,7 +107,7 @@ class RadarPlot(html.Div):
             "% Victim Below 18"
         ]
 
-        #Single scatterpolar trace
+        # Single scatterpolar trace
         fig = go.Figure()
 
         fig.add_trace(
