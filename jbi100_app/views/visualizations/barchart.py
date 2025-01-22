@@ -48,7 +48,7 @@ class BarChart(html.Div):
                 y='Count',
                 color='Victim.injury',
                 color_discrete_map=injury_colors,
-                labels={'Count': 'Number of Incidents', selected_x: selected_x}
+                labels={'Count': '<b>Number of Incidents</b>', selected_x: f"<b>{selected_x}</b>"}
             )
 
         else:
@@ -64,7 +64,7 @@ class BarChart(html.Div):
                     agg_data,
                     x=selected_x,
                     y=selected_y,
-                    labels={selected_y: f"Sum of {selected_y}", selected_x: selected_x}
+                    labels={selected_y: f"<b>Sum of {selected_y}</b>", selected_x: f"<b>{selected_x}</b>"}
                 )
             else:
                 agg_data = (
@@ -78,7 +78,7 @@ class BarChart(html.Div):
                     x=selected_x,
                     y='Count',
                     color=selected_y,
-                    labels={'Count': 'Number of Incidents', selected_y: selected_y, selected_x: selected_x}
+                    labels={'Count': '<b>Number of Incidents</b>', selected_y: f"<b>{selected_y}</b>", selected_x: f"<b>{selected_x}</b>"}
                 )
 
         #update layout for consistency

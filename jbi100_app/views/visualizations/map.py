@@ -30,17 +30,17 @@ class ScatterGeo(html.Div):
         filtered_df = filtered_df.reset_index(drop=True)
             
         hover_text = (
-            "Year: " + filtered_df['Incident.year'].fillna("Unknown").astype(str) + 
+            "<b>Year</b>: " + filtered_df['Incident.year'].fillna("Unknown").astype(str) + 
             "<br>" + 
-            "Location: " + filtered_df['Location'].fillna("Unknown") + 
+            "<b>Location</b>: " + filtered_df['Location'].fillna("Unknown") + 
             "<br>" + 
-            "Site: " + filtered_df['Site.category'].fillna("Unknown") + 
+            "<b>Site</b>: " + filtered_df['Site.category'].fillna("Unknown") + 
             "<br>" + 
-            "Shark: " + filtered_df['Shark.common.name'].fillna("Unknown") + 
+            "<b>Shark</b>: " + filtered_df['Shark.common.name'].fillna("Unknown") + 
             "<br>" + 
-            "Activity: " + filtered_df['Victim.activity'].fillna("Unknown") + 
+            "<b>Activity</b>: " + filtered_df['Victim.activity'].fillna("Unknown") + 
             "<br>"+ 
-            "Severity: " + filtered_df['Victim.injury'].fillna("Unknown") + 
+            "<b>Severity</b>: " + filtered_df['Victim.injury'].fillna("Unknown") + 
             "<br>"+ 
             filtered_df['Provoked/unprovoked'].fillna("Unknown")
         )

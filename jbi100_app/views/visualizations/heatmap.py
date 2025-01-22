@@ -27,14 +27,27 @@ class Heatmap(html.Div):
         """
         # Prepare data for one-dimensional heatmap
         grouped_data = filtered_df.groupby([selected_x, selected_y]).size().reset_index(name='Count')
+        # Create a complete grid of x and y combinations
+        x_values = grouped_data[selected_x].unique()
+        y_values = grouped_data[selected_y].unique()
+        complete_grid = pd.MultiIndex.from_product([x_values, y_values], names=[selected_x, selected_y]).to_frame(index=False)
+
+        # Merge the complete grid with the existing data, filling missing combinations with 0
+        filled_data = pd.merge(complete_grid, grouped_data, how='left', on=[selected_x, selected_y]).fillna({'Count': 0})
+        print(grouped_data)
 
         self.fig = go.Figure(
             data=go.Heatmap(
-                z=grouped_data['Count'],  # Values for heat intensity
-                x=grouped_data[selected_x],  # Categories along the x-axis
-                y=grouped_data[selected_y],  # Categories along the y-axis
+                z=filled_data['Count'],  # Values for heat intensity
+                x=filled_data[selected_x],  # Categories along the x-axis
+                y=filled_data[selected_y],  # Categories along the y-axis
                 colorscale='Reds',
-                showscale=True
+                showscale=True,
+                hovertemplate=(
+                    f"<b>{selected_x}</b>: " "%{x}<br>"
+                    f"<b>{selected_y}</b>: " "%{y}<br>"
+                    "<b>Count</b>: %{z}<extra></extra>"
+                )
             )
         )
 
