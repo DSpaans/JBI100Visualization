@@ -8,7 +8,7 @@ from jbi100_app.views.visualizations.barchart import BarChart
 from jbi100_app.views.visualizations.radarplot import RadarPlot
 from jbi100_app.views.visualizations.histogram import Histogram
 from jbi100_app.config import column_options_heatmap, column_options_barchart
-from dash import html, dcc
+from dash import html
 from dash.dependencies import Input, Output
 import plotly.graph_objects as go
 

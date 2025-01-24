@@ -2,7 +2,8 @@
 
 ## About this app
 
-You can use this as a basic template for your JBI100 visualization project.
+This is sharkify, a visualization tool for the Australian coast guard. 
+For the visualizations we used the plotly library making modifications of our own. We used the skeleton code provided to us by the course to give general structure, but again making changes of our own to change the layout, look and some of the inner workings.
 
 ## Requirements
 

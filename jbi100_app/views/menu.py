@@ -1,6 +1,4 @@
 from dash import dcc, html
-from jbi100_app.views.visualizations.histogram import Histogram
-import plotly.graph_objects as go
 
 # Color Palette
 BACKGROUND_COLOR = "#F7F7F7"  # Light gray background for the entire layout

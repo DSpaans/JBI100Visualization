@@ -1,8 +1,6 @@
 from dash import dcc, html
-import plotly.graph_objects as go
 import plotly.express as px
 import pandas as pd
-import itertools
 
 class BarChart(html.Div):
     def __init__(self, name, df):

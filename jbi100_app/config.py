@@ -1,5 +1,4 @@
 # Here you can add any global configuations
-import pandas as pd
 
 column_options_1 = ["None", "Incident.year", "Provoked/unprovoked"]
 column_options_heatmap = ["Shark.common.name", "Shark.scientific.name", "Injury.category", "Victim.injury", "State", "Site.category", 
