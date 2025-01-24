@@ -9,6 +9,11 @@ For the visualizations we used the plotly library making modifications of our ow
 
 * Python 3 (add it to your path (system variables) to make sure you can access it from the command prompt)
 * Git (https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+* dash>=2.0.0
+* numpy>=1.21.2
+* pandas>=1.3.3
+* pandas>=1.3.3
+* plotly>=5.24.1
 
 ## How to run this app
 
